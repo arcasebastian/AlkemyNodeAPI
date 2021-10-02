@@ -1,0 +1,33 @@
+{
+  "name": "alkemychallengeapi",
+  "version": "0.0.1",
+  "description": "An challenge API to find disney characters, movies and their genres",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/arcasebastian/AlkemyNodeAPI.git"
+  },
+  "keywords": [
+    "Alkemy",
+    "Node.js",
+    "REST",
+    "Disney"
+  ],
+  "author": "Arca, Sebastián",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arcasebastian/AlkemyNodeAPI/issues"
+  },
+  "homepage": "https://github.com/arcasebastian/AlkemyNodeAPI#readme",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.2",
+    "chai-http": "^4.3.0"
+  },
+  "dependencies": {
+  }
+}
