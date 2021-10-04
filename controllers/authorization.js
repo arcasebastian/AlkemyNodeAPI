@@ -13,14 +13,39 @@ exports.register = (req, res, next) => {
     if (!password.length > 8) {
       throw setError("password must be at least 8 characters", 400);
     }
-    res.status(201).json({ access_token: "test_token" });
+    res.status(201).json({ status: "User registered successfully" });
   } catch (err) {
-    res.status(err.statusCode || 500).json({ error: err.message });
+    const httpCode = err.statusCode || 500
+    res.status(httpCode).json({ error: err.message, httpCode: httpCode });
   }
 };
 
-function setError(message, errorData) {
+exports.login = (req, res, next) => {
+  try {
+    let isInvalid = false;
+    if (req.body === {}) {
+      isInvalid = true;
+    }
+    const { email, password } = req.body;
+    if ( !email || !password) {
+      isInvalid = true;
+    }
+    if (!email.includes("@")) {
+      isInvalid = true;
+    }
+    if (isInvalid)
+      throw setError("Invalid email or password", 401);
+    res.status(200).json({ access_token: '' });
+  } catch (err) {
+    const httpCode = err.statusCode || 500
+    res.status(httpCode).json({ error: err.message, httpCode: httpCode, extraData: err.extraData });
+  }
+};
+
+
+function setError(message, errorCode, extraData = '') {
   const error = new Error(message);
-  error.statusCode = errorData;
+  error.statusCode = errorCode;
+  error.extraData = extraData;
   return error;
 }
