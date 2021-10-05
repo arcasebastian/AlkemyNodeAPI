@@ -8,7 +8,14 @@ const authorizationRouter = require("./routes/authorization");
 const app = express();
 app.use(bodyParser.json());
 app.use("/auth", authorizationRouter);
-
+app.use((error, req, res, next) => {
+  const httpCode = error.statusCode || 500;
+  res.status(httpCode).json({
+    error: error.message,
+    httpCode: httpCode,
+    extraData: error.extraData,
+  });
+});
 const server = http.createServer(app);
 
 sequelize.sync();

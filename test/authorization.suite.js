@@ -62,22 +62,20 @@ describe("Authorization API endpoint", () => {
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.have.property("httpCode").eq(400);
-          res.body.should.have.a.property("error").eq("email is invalid");
+          res.body.should.have.a.property("error").eq("Email is invalid");
         });
     });
     after(() => {
-      User.findOne({
-        where: { email: validRegister.email, name: validRegister.name },
-      })
+      User.findByEmail(validRegister.email)
         .then((user) => {
-          user.delete();
+          if (user) user.destroy();
         })
         .catch((err) => {
           console.log(err);
         });
     });
   });
-  describe("GET/PUT/DELETE /auth/signup", () => {
+  describe("GET/POST/DELETE /auth/signup", () => {
     it("should return a 405 status response", function () {
       chai
         .request(server)
@@ -89,6 +87,7 @@ describe("Authorization API endpoint", () => {
         });
     });
   });
+
   describe("POST /auth/login", () => {
     const validLogin = {
       email: "someuser@google.com",
