@@ -1,5 +1,6 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-exports.register = (req, res, next) => {
+exports.register = async (req, res, next) => {
   try {
     if (req.body === {}) {
       throw setError("bad request", 400);
@@ -14,8 +15,17 @@ exports.register = (req, res, next) => {
     if (!password.length > 8) {
       throw setError("password must be at least 8 characters", 400);
     }
-    //Todo Create user.
-    res.status(201).json({ status: "User registered successfully" });
+    const user = await User.findOne({ where: { email: email } });
+    if (user) throw setError("Email is already registered", 409);
+    const newUser = new User({
+      name: name,
+      password: await bcrypt.hash(password, 12),
+      email: email,
+      status: 1,
+    });
+    if (await newUser.save()) {
+      res.status(201).json({ status: "User registered successfully" });
+    }
   } catch (err) {
     const httpCode = err.statusCode || 500;
     res.status(httpCode).json({ error: err.message, httpCode: httpCode });
