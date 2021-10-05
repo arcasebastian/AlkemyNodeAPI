@@ -1,3 +1,4 @@
+const User = require("../models/User");
 exports.register = (req, res, next) => {
   try {
     if (req.body === {}) {
@@ -13,9 +14,10 @@ exports.register = (req, res, next) => {
     if (!password.length > 8) {
       throw setError("password must be at least 8 characters", 400);
     }
+    //Todo Create user.
     res.status(201).json({ status: "User registered successfully" });
   } catch (err) {
-    const httpCode = err.statusCode || 500
+    const httpCode = err.statusCode || 500;
     res.status(httpCode).json({ error: err.message, httpCode: httpCode });
   }
 };
@@ -27,23 +29,25 @@ exports.login = (req, res, next) => {
       isInvalid = true;
     }
     const { email, password } = req.body;
-    if ( !email || !password) {
+    if (!email || !password) {
       isInvalid = true;
     }
     if (!email.includes("@")) {
       isInvalid = true;
     }
-    if (isInvalid)
-      throw setError("Invalid email or password", 401);
-    res.status(200).json({ access_token: '' });
+    if (isInvalid) throw setError("Invalid email or password", 401);
+    res.status(200).json({ access_token: "" });
   } catch (err) {
-    const httpCode = err.statusCode || 500
-    res.status(httpCode).json({ error: err.message, httpCode: httpCode, extraData: err.extraData });
+    const httpCode = err.statusCode || 500;
+    res.status(httpCode).json({
+      error: err.message,
+      httpCode: httpCode,
+      extraData: err.extraData,
+    });
   }
 };
 
-
-function setError(message, errorCode, extraData = '') {
+function setError(message, errorCode, extraData = "") {
   const error = new Error(message);
   error.statusCode = errorCode;
   error.extraData = extraData;
