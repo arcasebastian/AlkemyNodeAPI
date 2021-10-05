@@ -8,18 +8,17 @@ chai.use(chaiHttp);
 describe("Authorization API endpoint", () => {
   const registerEndpoint = "/auth/register";
   const loginEndpoint = "/auth/login";
-
+  const validRegister = {
+    name: "validUser",
+    email: "validMail@google.com",
+    password: "asASqm1!ea1g",
+  };
+  const invalidRegister = {
+    name: "invalidUser",
+    email: "invalidmail___google.com",
+    password: "asASqm1!ea1g",
+  };
   describe("PUT /auth/signup", () => {
-    const validRegister = {
-      name: "dsadsa",
-      email: "someuser@google.com",
-      password: "asASqm1!ea1g",
-    };
-    const invalidRegister = {
-      name: "dsadsa",
-      email: "someuser_google.com",
-      password: "asASqm1!ea1g",
-    };
     it("should register a new user", function () {
       chai
         .request(server)
@@ -65,15 +64,6 @@ describe("Authorization API endpoint", () => {
           res.body.should.have.a.property("error").eq("Email is invalid");
         });
     });
-    after(() => {
-      User.findByEmail(validRegister.email)
-        .then((user) => {
-          if (user) user.destroy();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    });
   });
   describe("GET/POST/DELETE /auth/signup", () => {
     it("should return a 405 status response", function () {
@@ -90,12 +80,12 @@ describe("Authorization API endpoint", () => {
 
   describe("POST /auth/login", () => {
     const validLogin = {
-      email: "someuser@google.com",
-      password: "asASqm1!ea1g",
+      email: validRegister.email,
+      password: validRegister.password,
     };
     const invalidLogin = {
-      email: "someuser_google.com",
-      password: "asASqm1!ea1g",
+      email: validRegister.email,
+      password: "weakpassword",
     };
     it("should login a valid user and get a access_token", function () {
       chai
@@ -135,5 +125,14 @@ describe("Authorization API endpoint", () => {
           res.body.should.have.a.property("error").eq("Method not allowed");
         });
     });
+  });
+  after(() => {
+    User.findByEmail(validRegister.email)
+      .then((user) => {
+        if (user) user.destroy();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 });
