@@ -1,39 +1,47 @@
-const Sequelize = require("sequelize");
+const { Sequelize, DataTypes, Model } = require("sequelize");
 
 const sequelizePool = require("../util/database");
+class User extends Model {
+  static findByEmail(emailToFind) {
+    return this.findOne({
+      where: {
+        email: emailToFind,
+        status: 1,
+      },
+    });
+  }
+}
 
-const User = sequelizePool.define("user", {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      default: 1,
+    },
   },
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  status: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    default: 1,
-  },
-  created_at: {
-    type: Sequelize.DATE,
-    allowNull: false,
-  },
-  updated_at: {
-    type: Sequelize.DATE,
-  },
-});
-
+  {
+    sequelize: sequelizePool,
+    modelName: "user",
+  }
+);
 module.exports = User;
