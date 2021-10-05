@@ -1,60 +1,47 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
+const env = require("../env/env.json");
 const User = require("../models/User");
+
 exports.register = async (req, res, next) => {
-  try {
-    if (req.body === {}) {
-      throw setError("bad request", 400);
-    }
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      throw setError("name, email and password are required", 400);
-    }
-    if (!email.includes("@")) {
-      throw setError("email is invalid", 400);
-    }
-    if (!password.length > 8) {
-      throw setError("password must be at least 8 characters", 400);
-    }
-    const user = await User.findOne({ where: { email: email } });
-    if (user) throw setError("Email is already registered", 409);
-    const newUser = new User({
-      name: name,
-      password: await bcrypt.hash(password, 12),
-      email: email,
-      status: 1,
-    });
-    if (await newUser.save()) {
-      res.status(201).json({ status: "User registered successfully" });
-    }
-  } catch (err) {
-    const httpCode = err.statusCode || 500;
-    res.status(httpCode).json({ error: err.message, httpCode: httpCode });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const firstError = errors.array({ onlyFirstError: true })[0];
+    const errorCode = firstError.msg.includes("already") ? 409 : 400;
+    return next(setError(firstError.msg, errorCode));
+  }
+  const { name, email, password } = req.body;
+  const newUser = new User({
+    name: name,
+    password: await bcrypt.hash(password, 12),
+    email: email,
+    status: 1,
+  });
+  if (await newUser.save()) {
+    res.status(201).json({ status: "User registered successfully" });
   }
 };
 
-exports.login = (req, res, next) => {
-  try {
-    let isInvalid = false;
-    if (req.body === {}) {
-      isInvalid = true;
-    }
+exports.login = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
     const { email, password } = req.body;
-    if (!email || !password) {
-      isInvalid = true;
+    const user = await User.findByEmail(email);
+    if (await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        },
+        env.jwtSecret,
+        { expiresIn: "2h" }
+      );
+      return res.status(200).json({ access_token: token, username: user.name });
     }
-    if (!email.includes("@")) {
-      isInvalid = true;
-    }
-    if (isInvalid) throw setError("Invalid email or password", 401);
-    res.status(200).json({ access_token: "" });
-  } catch (err) {
-    const httpCode = err.statusCode || 500;
-    res.status(httpCode).json({
-      error: err.message,
-      httpCode: httpCode,
-      extraData: err.extraData,
-    });
   }
+  return next(setError("Invalid email or password", 401));
 };
 
 function setError(message, errorCode, extraData = "") {

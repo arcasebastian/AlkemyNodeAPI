@@ -2,5 +2,6 @@
   "database": "disney_api",
   "databaseUser": "disneyUser",
   "databasePassword": "ADJqi1fda21",
-  "databaseHost": "localhost"
+  "databaseHost": "localhost",
+  "jwtSecret": ""
 }
