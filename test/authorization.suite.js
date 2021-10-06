@@ -19,7 +19,7 @@ describe("Authorization API endpoint", () => {
     password: "asASqm1!ea1g",
   };
   describe("PUT /auth/signup", () => {
-    it("should register a new user", function () {
+    it("should register a new user", function (done) {
       chai
         .request(server)
         .put(registerEndpoint)
@@ -30,9 +30,10 @@ describe("Authorization API endpoint", () => {
           res.body.should.have
             .property("status")
             .eq("User registered successfully");
+          done();
         });
     });
-    it("should return a validation error when the user is already registered", function () {
+    it("should return a validation error when the user is already registered", function (done) {
       chai
         .request(server)
         .put(registerEndpoint)
@@ -41,9 +42,10 @@ describe("Authorization API endpoint", () => {
           res.should.have.status(409);
           res.body.should.be.a("object");
           res.body.should.have.property("httpCode").eq(409);
+          done();
         });
     });
-    it("should not register a new user", function () {
+    it("should not register a new user", function (done) {
       chai
         .request(server)
         .put(registerEndpoint)
@@ -62,11 +64,12 @@ describe("Authorization API endpoint", () => {
           res.should.have.status(400);
           res.body.should.have.property("httpCode").eq(400);
           res.body.should.have.a.property("error").eq("Email is invalid");
+          done();
         });
     });
   });
   describe("GET/POST/DELETE /auth/signup", () => {
-    it("should return a 405 status response", function () {
+    it("should return a 405 status response", function (done) {
       chai
         .request(server)
         .get(registerEndpoint)
@@ -74,6 +77,7 @@ describe("Authorization API endpoint", () => {
           res.should.have.status(405);
           res.body.should.have.property("httpCode").eq(405);
           res.body.should.have.a.property("error").eq("Method not allowed");
+          done();
         });
     });
   });
@@ -87,7 +91,7 @@ describe("Authorization API endpoint", () => {
       email: validRegister.email,
       password: "weakpassword",
     };
-    it("should login a valid user and get a access_token", function () {
+    it("should login a valid user and get a access_token", function (done) {
       chai
         .request(server)
         .post(loginEndpoint)
@@ -97,9 +101,10 @@ describe("Authorization API endpoint", () => {
           res.body.should.be.a("object");
           res.body.should.have.property("access_token");
           should.not.equal(res.body.access_token, null);
+          done();
         });
     });
-    it("should get a login error validation", function () {
+    it("should get a login error validation", function (done) {
       chai
         .request(server)
         .post(loginEndpoint)
@@ -112,17 +117,19 @@ describe("Authorization API endpoint", () => {
           res.body.should.have
             .property("error")
             .eq("Invalid email or password");
+          done();
         });
     });
   });
   describe("GET/PUT/DELETE /auth/signup", () => {
-    it("should return a 405 status response", function () {
+    it("should return a 405 status response", function (done) {
       chai
         .request(server)
         .get("/auth/register")
         .end((err, res) => {
           res.should.have.status(405);
           res.body.should.have.a.property("error").eq("Method not allowed");
+          done();
         });
     });
   });

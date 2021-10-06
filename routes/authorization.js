@@ -1,9 +1,9 @@
 const express = require("express");
-const controller = require("../controllers/authorization");
 const { body } = require("express-validator");
-const User = require("../models/User");
-
 const router = express.Router();
+
+const controller = require("../controllers/authorization");
+const User = require("../models/User");
 
 const registerMethodsAllowed = ["PUT"];
 const loginMethodsAllowed = ["POST"];
