@@ -6,9 +6,19 @@ const sequelize = require("./util/database");
 const authorizationRouter = require("./routes/authorization");
 const genresRouter = require("./routes/genres");
 const { normalizeError } = require("./util/normalizeError");
+const { uploadFile } = require("./util/storage");
+const path = require("path");
+
+const Character = require("./models/Character");
+const Movie = require("./models/Movie");
+const MovieCharacter = require("./models/MovieCharacter");
+const Genre = require("./models/Genre");
+const GenreMovie = require("./models/GenreMovie");
 
 const app = express();
 app.use(bodyParser.json());
+app.use(uploadFile);
+app.use("/images", express.static(path.join(__dirname, "public", "images")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -42,6 +52,18 @@ app.use((error, req, res, next) => {
   });
 });
 const server = http.createServer(app);
-
+Movie.belongsToMany(Genre, {
+  through: GenreMovie,
+});
+Genre.belongsToMany(Movie, {
+  through: GenreMovie,
+});
+Character.belongsToMany(Movie, {
+  through: MovieCharacter,
+});
+Movie.belongsToMany(Character, {
+  through: MovieCharacter,
+});
 sequelize.sync();
+
 module.exports = server.listen(3000);
