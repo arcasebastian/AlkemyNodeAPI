@@ -3,13 +3,14 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const env = require("../env/env.json");
 const User = require("../models/User");
+const { normalizeError } = require("../util/normalizeError");
 
 exports.register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const firstError = errors.array({ onlyFirstError: true })[0];
     const errorCode = firstError.msg.includes("already") ? 409 : 400;
-    return next(setError(firstError.msg, errorCode));
+    return next(normalizeError(firstError.msg, errorCode));
   }
   const { name, email, password } = req.body;
   const newUser = new User({
@@ -41,12 +42,5 @@ exports.login = async (req, res, next) => {
       return res.status(200).json({ access_token: token, username: user.name });
     }
   }
-  return next(setError("Invalid email or password", 401));
+  return next(normalizeError("Invalid email or password", 401));
 };
-
-function setError(message, errorCode, extraData = "") {
-  const error = new Error(message);
-  error.statusCode = errorCode;
-  error.extraData = extraData;
-  return error;
-}

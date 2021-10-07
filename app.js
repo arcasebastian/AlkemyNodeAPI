@@ -5,6 +5,7 @@ const sequelize = require("./util/database");
 //routes
 const authorizationRouter = require("./routes/authorization");
 const genresRouter = require("./routes/genres");
+const { normalizeError } = require("./util/normalizeError");
 
 const app = express();
 app.use(bodyParser.json());
@@ -26,11 +27,12 @@ app.use((req, res, next) => {
 app.use("/auth", authorizationRouter);
 app.use((req, res, next) => {
   if (req.header("Authorization") === undefined)
-    return res.status(405).json({ error: "Unauthorized" });
-  return next();
+    return next(normalizeError("Unauthorized", 405));
+  next();
 });
-
 app.use("/genres", genresRouter);
+
+// Generic Error Handling
 app.use((error, req, res, next) => {
   const httpCode = error.statusCode || 500;
   res.status(httpCode).json({
