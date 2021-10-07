@@ -12,7 +12,7 @@ describe("Genres API endpoint", () => {
 
   const newGenreImg = path.join(__dirname, "test_files", "test_img.png");
   let access_token = "";
-  let id = "/1";
+  let id = "";
   before(() => {
     chai.request(server).post("/auth/login", (err, res) => {
       if (!err) {
@@ -78,6 +78,7 @@ describe("Genres API endpoint", () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
+          id = res.body[0].id;
           res.body.length.should.be.greaterThan(0);
           res.body[0].should.have.property("name");
           res.body[0].should.have.property("image");
@@ -89,7 +90,7 @@ describe("Genres API endpoint", () => {
     it("should return a single genre", function (done) {
       chai
         .request(server)
-        .get(baseEndpoint + id)
+        .get(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
           res.should.have.status(200);
@@ -103,9 +104,10 @@ describe("Genres API endpoint", () => {
     it("should update a genre", function (done) {
       chai
         .request(server)
-        .put(baseEndpoint + id)
+        .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
-        .send({ name: updateGenreName })
+        .field({ name: updateGenreName })
+        .attach("image", newGenreImg)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
@@ -120,7 +122,7 @@ describe("Genres API endpoint", () => {
     it("should delete genre", function (done) {
       chai
         .request(server)
-        .delete(baseEndpoint + id)
+        .delete(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
           res.should.have.status(200);
