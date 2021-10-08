@@ -8,7 +8,7 @@ class Genre extends Model {
     return Genre.findAll({ attributes: ["id", "name", "image"] });
   }
   static getOne(id) {
-    return Genre.findOne({ where: { id: id }, include: Movie });
+    return Genre.findOne({ where: { id: id } });
   }
 }
 
@@ -33,7 +33,7 @@ Genre.init(
   {
     hooks: {
       beforeDestroy: (genre, options) => {
-        deleteFile(`../public${genre.image}`);
+        deleteFile(genre.image);
       },
     },
     sequelize: sequelizePool,

@@ -4,7 +4,7 @@ const path = require("path");
 const { normalizeError } = require("./normalizeError");
 
 const storage = multer.diskStorage({
-  destination: path.join("..", "public", "images"),
+  destination: path.join(__dirname, "..", "public", "images"),
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
@@ -34,7 +34,8 @@ const uploadFile = (req, res, next) => {
   });
 };
 const deleteFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
+  let actualPath = path.normalize(__dirname + "/../public" + filePath);
+  fs.unlink(actualPath, (err) => {
     if (err) {
       throw err;
     }
