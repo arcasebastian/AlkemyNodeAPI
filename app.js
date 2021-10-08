@@ -5,6 +5,9 @@ const sequelize = require("./util/database");
 //routes
 const authorizationRouter = require("./routes/authorization");
 const genresRouter = require("./routes/genres");
+const moviesRouter = require("./routes/movies");
+const charactersRouter = require("./routes/characters");
+
 const { normalizeError } = require("./util/normalizeError");
 const { uploadFile } = require("./util/storage");
 const path = require("path");
@@ -41,6 +44,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/genres", genresRouter);
+app.use("/movies", moviesRouter);
+app.use("/characters", charactersRouter);
 
 // Generic Error Handling
 app.use((error, req, res, next) => {
@@ -65,5 +70,8 @@ Movie.belongsToMany(Character, {
   through: MovieCharacter,
 });
 sequelize.sync();
+
+var os = require("os");
+console.log(os.hostname());
 
 module.exports = server.listen(3000);

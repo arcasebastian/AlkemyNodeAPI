@@ -5,12 +5,16 @@ const chaiHttp = require("chai-http");
 chai.should();
 chai.use(chaiHttp);
 // TODO Validation errors testing
-describe("Genres API endpoint", () => {
-  const baseEndpoint = "/genres";
-  const newGenreName = "Animation";
-  const updateGenreName = "Updated Name";
+describe("Movies API endpoint", () => {
+  const baseEndpoint = "/movies";
+  const newMovie = {
+    title: "Tangled",
+    releaseDate: "11/11/2010",
+    rating: 4,
+  };
+  const updateMovieName = "Updated Name";
 
-  const newGenreImg = path.join(__dirname, "test_files", "test_img.png");
+  const newMovieImg = path.join(__dirname, "test_files", "movie.jpg");
   let access_token = "";
   let id = "";
   before(() => {
@@ -20,7 +24,7 @@ describe("Genres API endpoint", () => {
       }
     });
   });
-  describe("Unauthorized /genres", () => {
+  describe("Unauthorized /movies", () => {
     it("should get a 405 unauthorized status code", function () {
       chai
         .request(server)
@@ -30,7 +34,7 @@ describe("Genres API endpoint", () => {
         });
     });
   });
-  describe("OPTIONS /genres", () => {
+  describe("OPTIONS /movies", () => {
     it("should get a valid preflight response", function (done) {
       chai
         .request(server)
@@ -50,27 +54,27 @@ describe("Genres API endpoint", () => {
         });
     });
   });
-  describe("POST /genres", () => {
+  describe("POST /movies", () => {
     console.log(__dirname);
     it("should create a new genre", function (done) {
       chai
         .request(server)
         .post(baseEndpoint)
         .set("Authorization", access_token)
-        .field({ name: newGenreName })
-        .attach("image", newGenreImg)
+        .field(newMovie)
+        //.attach("image", newMovieImg)
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.a("object");
           res.body.should.have
             .property("status")
-            .eq("New genre successfully created");
+            .eq("New movie successfully created");
           done();
         });
     });
   });
-  describe("GET /genres", () => {
-    it("should return a list of genres", function (done) {
+  describe("GET /movies", () => {
+    it("should return a list of movies", function (done) {
       chai
         .request(server)
         .get(baseEndpoint)
@@ -80,13 +84,13 @@ describe("Genres API endpoint", () => {
           res.body.should.be.a("array");
           id = res.body[0].id;
           res.body.length.should.be.greaterThan(0);
-          res.body[0].should.have.property("name");
+          res.body[0].should.have.property("title");
           res.body[0].should.have.property("image");
           done();
         });
     });
   });
-  describe("GET /genres/:id", () => {
+  describe("GET /movies/:id", () => {
     it("should return a single genre", function (done) {
       chai
         .request(server)
@@ -95,30 +99,31 @@ describe("Genres API endpoint", () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
-          res.body.should.have.property("name").eq(newGenreName);
+          res.body.should.have.property("title");
           done();
         });
     });
   });
-  describe("PUT /genres/:id", () => {
+  describe("PUT /movies/:id", () => {
+    newMovie.title = "Tangled Updated";
     it("should update a genre", function (done) {
       chai
         .request(server)
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
-        .field({ name: updateGenreName })
-        .attach("image", newGenreImg)
+        .field(newMovie)
+        //.attach("image", newMovieImg)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
           res.body.should.have
             .property("status")
-            .eq("Genre successfully updated");
+            .eq("Movie successfully updated");
           done();
         });
     });
   });
-  describe("DELETE /genres/:id", () => {
+  describe("DELETE /movies/:id", () => {
     it("should delete genre", function (done) {
       chai
         .request(server)
@@ -129,7 +134,7 @@ describe("Genres API endpoint", () => {
           res.body.should.be.a("object");
           res.body.should.have
             .property("status")
-            .eq("Genre was successfully deleted");
+            .eq("Movie was successfully deleted");
           done();
         });
     });
