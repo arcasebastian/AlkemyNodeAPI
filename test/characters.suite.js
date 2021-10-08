@@ -5,6 +5,10 @@ const chaiHttp = require("chai-http");
 const User = require("../models/User");
 chai.should();
 chai.use(chaiHttp);
+const user = {
+  email: "someuser@google.com",
+  password: "asASqm1!ea1g",
+};
 // TODO Validation errors testing
 describe("Characters API endpoint", () => {
   let requester;
@@ -21,20 +25,19 @@ describe("Characters API endpoint", () => {
 
   let access_token = "";
   let id = "";
-  before(() => {
+  before((done) => {
     requester = chai.request(server).keepOpen();
-    requester.post("/auth/login", (err, res) => {
-      if (!err) {
-        access_token = res.body.access_token;
-      }
-    });
-    requester.post("/movies", (err, res) => {
-      if (!err) {
-        newCharacter.movies.push(
-          res.body.filter((movie) => movie.title === "Tangled").id
-        );
-      }
-    });
+    requester
+      .post("/auth/login")
+      .field(user)
+      .end((err, res) => {
+        if (!err) {
+          access_token = `Bearer ${res.body.access_token}`;
+          done();
+        } else {
+          throw err;
+        }
+      });
   });
 
   describe("Unauthorized /characters", () => {
@@ -78,18 +81,17 @@ describe("Characters API endpoint", () => {
           done();
         });
     });
-    it("should return a validation error", function (done) {
+    xit("should return a validation error", function (done) {
+      const invalidCharacter = { ...newCharacter };
+      invalidCharacter.name = "";
       requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
-        .field(newCharacter)
+        .field(invalidCharacter)
         //.attach("image", newCharacterImage)
         .end((err, res) => {
-          res.should.have.status(201);
-          res.body.should.be.a("object");
-          res.body.should.have
-            .property("status")
-            .eq("New character successfully created");
+          res.should.have.status(400);
+          res.body.should.to.include.all.keys("error", "httpCode");
           done();
         });
     });
@@ -126,6 +128,15 @@ describe("Characters API endpoint", () => {
             "history",
             "movies"
           );
+          done();
+        });
+    });
+    it("should return 404 status code", function (done) {
+      requester
+        .get(`${baseEndpoint}/0`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
           done();
         });
     });

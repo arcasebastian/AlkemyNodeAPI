@@ -38,11 +38,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", authorizationRouter);
-app.use((req, res, next) => {
-  if (req.header("Authorization") === undefined)
-    return next(normalizeError("Unauthorized", 405));
-  next();
-});
 app.use("/genres", genresRouter);
 app.use("/movies", moviesRouter);
 app.use("/characters", charactersRouter);

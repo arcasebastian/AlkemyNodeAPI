@@ -4,30 +4,35 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 chai.should();
 chai.use(chaiHttp);
-
+const user = {
+  email: "someuser@google.com",
+  password: "asASqm1!ea1g",
+};
 // TODO Validation errors testing
 describe("Movies API endpoint", () => {
   let requester;
-  before(() => {
-    requester = chai.request(server).keepOpen();
-  });
   const baseEndpoint = "/movies";
   const newMovie = {
     title: "Tangled",
     releaseDate: "11/11/2010",
     rating: 4,
   };
-  const updateMovieName = "Updated Name";
-
   const newMovieImg = path.join(__dirname, "test_files", "movie.jpg");
   let access_token = "";
   let id = "";
-  before(() => {
-    requester.post("/auth/login", (err, res) => {
-      if (!err) {
-        access_token = res.body.access_token;
-      }
-    });
+  before((done) => {
+    requester = chai.request(server).keepOpen();
+    requester
+      .post("/auth/login")
+      .field(user)
+      .end((err, res) => {
+        if (!err) {
+          access_token = `Bearer ${res.body.access_token}`;
+        } else {
+          throw err;
+        }
+        done();
+      });
   });
   describe("Unauthorized /movies", () => {
     it("should get a 405 unauthorized status code", function () {
@@ -73,6 +78,7 @@ describe("Movies API endpoint", () => {
   });
   describe("GET /movies", () => {
     it("should return a list of movies", function (done) {
+      console.log(access_token);
       requester
         .get(baseEndpoint)
         .set("Authorization", access_token)

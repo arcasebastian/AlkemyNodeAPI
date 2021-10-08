@@ -2,9 +2,11 @@ const express = require("express");
 const controller = require("../controllers/genres");
 const { body } = require("express-validator");
 const Genre = require("../models/Genre");
+const { isAuth } = require("../middleware/isAuthorized");
 const router = express.Router();
 router.post(
   "/",
+  isAuth,
   [
     body("name")
       .trim()
@@ -20,10 +22,11 @@ router.post(
   ],
   controller.post
 );
-router.get("/", controller.getAll);
-router.get("/:id", controller.getOne);
+router.get("/", isAuth, controller.getAll);
+router.get("/:id", isAuth, controller.getOne);
 router.put(
   "/:id",
+  isAuth,
   [
     body("name")
       .trim()
@@ -32,5 +35,5 @@ router.put(
   ],
   controller.put
 );
-router.delete("/:id", controller.delete);
+router.delete("/:id", isAuth, controller.delete);
 module.exports = router;

@@ -4,6 +4,10 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 chai.should();
 chai.use(chaiHttp);
+const user = {
+  email: "someuser@google.com",
+  password: "asASqm1!ea1g",
+};
 // TODO Validation errors testing
 describe("Genres API endpoint", () => {
   let requester;
@@ -14,13 +18,19 @@ describe("Genres API endpoint", () => {
   const newGenreImg = path.join(__dirname, "test_files", "test_img.png");
   let access_token = "";
   let id = "";
-  before(() => {
+  before((done) => {
     requester = chai.request(server).keepOpen();
-    requester.post("/auth/login", (err, res) => {
-      if (!err) {
-        access_token = res.body.access_token;
-      }
-    });
+    requester
+      .post("/auth/login")
+      .field(user)
+      .end((err, res) => {
+        if (!err) {
+          access_token = `Bearer ${res.body.access_token}`;
+        } else {
+          throw err;
+        }
+        done();
+      });
   });
   describe("Unauthorized /genres", () => {
     it("should get a 405 unauthorized status code", function () {
