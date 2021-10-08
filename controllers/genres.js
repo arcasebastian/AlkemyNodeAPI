@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const Genre = require("../models/Genre");
 const { normalizeError } = require("../util/normalizeError");
+const { deleteFile } = require("../util/storage");
 
 exports.post = async (req, res, next) => {
   const errors = validationResult(req);
@@ -31,8 +32,18 @@ exports.getAll = async (req, res, next) => {
 exports.getOne = async (req, res, next) => {
   const requestedId = req.params.id;
   const genre = await Genre.getOne(requestedId);
-  if (genre) return res.status(200).json(genre);
-  else return next(normalizeError("Not found", 404));
+  if (genre) {
+    const movies = await genre.getMovies({ attributes: ["id"] });
+    let moviesResource = [];
+    if (movies.length > 0) {
+      moviesResource = movies.map((movie) => {
+        return { title: movie.name, src: `/movies/${movie.id}` };
+      });
+    }
+    return res
+      .status(200)
+      .json({ ...genre.dataValues, movies: moviesResource });
+  } else return next(normalizeError("Not found", 404));
 };
 exports.put = async (req, res, next) => {
   const requestedId = req.params.id;
@@ -48,6 +59,7 @@ exports.put = async (req, res, next) => {
       const imageFile = req.file.filename;
       if (!imageFile) return next(normalizeError("Invalid file", 400));
       genreToUpdate.name = name;
+      deleteFile(genreToUpdate.image);
       genreToUpdate.image = `/images/${imageFile}`;
       if (await genreToUpdate.save())
         return res.status(200).json({ status: "Genre successfully updated" });
