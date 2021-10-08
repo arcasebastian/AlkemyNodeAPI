@@ -6,6 +6,7 @@ chai.should();
 chai.use(chaiHttp);
 // TODO Validation errors testing
 describe("Genres API endpoint", () => {
+  let requester;
   const baseEndpoint = "/genres";
   const newGenreName = "Animation";
   const updateGenreName = "Updated Name";
@@ -14,7 +15,8 @@ describe("Genres API endpoint", () => {
   let access_token = "";
   let id = "";
   before(() => {
-    chai.request(server).post("/auth/login", (err, res) => {
+    requester = chai.request(server).keepOpen();
+    requester.post("/auth/login", (err, res) => {
       if (!err) {
         access_token = res.body.access_token;
       }
@@ -22,39 +24,32 @@ describe("Genres API endpoint", () => {
   });
   describe("Unauthorized /genres", () => {
     it("should get a 405 unauthorized status code", function () {
-      chai
-        .request(server)
-        .get(baseEndpoint)
-        .end((err, res) => {
-          res.should.have.status(405);
-        });
+      requester.get(baseEndpoint).end((err, res) => {
+        res.should.have.status(405);
+      });
     });
   });
   describe("OPTIONS /genres", () => {
     it("should get a valid preflight response", function (done) {
-      chai
-        .request(server)
-        .options(baseEndpoint)
-        .end((err, res) => {
-          res.should.have.status(204);
-          res.should.have.header("Access-Control-Allow-Origin", "*");
-          res.should.have.header(
-            "Access-Control-Allow-Methods",
-            "OPTIONS, GET, PUT, POST, DELETE"
-          );
-          res.should.have.header(
-            "Access-Control-Allow-Headers",
-            "Authorization,Cache-Control,Content-Type"
-          );
-          done();
-        });
+      requester.options(baseEndpoint).end((err, res) => {
+        res.should.have.status(204);
+        res.should.have.header("Access-Control-Allow-Origin", "*");
+        res.should.have.header(
+          "Access-Control-Allow-Methods",
+          "OPTIONS, GET, PUT, POST, DELETE"
+        );
+        res.should.have.header(
+          "Access-Control-Allow-Headers",
+          "Authorization,Cache-Control,Content-Type"
+        );
+        done();
+      });
     });
   });
   describe("POST /genres", () => {
     console.log(__dirname);
     it("should create a new genre", function (done) {
-      chai
-        .request(server)
+      requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
         .field({ name: newGenreName })
@@ -71,8 +66,7 @@ describe("Genres API endpoint", () => {
   });
   describe("GET /genres", () => {
     it("should return a list of genres", function (done) {
-      chai
-        .request(server)
+      requester
         .get(baseEndpoint)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -88,8 +82,7 @@ describe("Genres API endpoint", () => {
   });
   describe("GET /genres/:id", () => {
     it("should return a single genre", function (done) {
-      chai
-        .request(server)
+      requester
         .get(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -102,8 +95,7 @@ describe("Genres API endpoint", () => {
   });
   describe("PUT /genres/:id", () => {
     it("should update a genre", function (done) {
-      chai
-        .request(server)
+      requester
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .field({ name: updateGenreName })
@@ -120,8 +112,7 @@ describe("Genres API endpoint", () => {
   });
   describe("DELETE /genres/:id", () => {
     it("should delete genre", function (done) {
-      chai
-        .request(server)
+      requester
         .delete(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -133,5 +124,8 @@ describe("Genres API endpoint", () => {
           done();
         });
     });
+  });
+  after(() => {
+    requester.close();
   });
 });

@@ -4,6 +4,7 @@ const chaiHttp = require("chai-http");
 const User = require("../models/User");
 chai.should();
 chai.use(chaiHttp);
+const requester = chai.request(server).keepOpen();
 
 describe("Authorization API endpoint", () => {
   const registerEndpoint = "/auth/register";
@@ -20,8 +21,7 @@ describe("Authorization API endpoint", () => {
   };
   describe("PUT /auth/signup", () => {
     it("should register a new user", function (done) {
-      chai
-        .request(server)
+      requester
         .put(registerEndpoint)
         .send(validRegister)
         .end((err, res) => {
@@ -34,8 +34,7 @@ describe("Authorization API endpoint", () => {
         });
     });
     it("should return a validation error when the user is already registered", function (done) {
-      chai
-        .request(server)
+      requester
         .put(registerEndpoint)
         .send(validRegister)
         .end((err, res) => {
@@ -46,18 +45,14 @@ describe("Authorization API endpoint", () => {
         });
     });
     it("should not register a new user", function (done) {
-      chai
-        .request(server)
-        .put(registerEndpoint)
-        .end((err, res) => {
-          res.should.have.status(400);
-          res.body.should.have.a
-            .property("error")
-            .eq("name, email and password are required");
-          res.body.should.have.property("httpCode").eq(400);
-        });
-      chai
-        .request(server)
+      requester.put(registerEndpoint).end((err, res) => {
+        res.should.have.status(400);
+        res.body.should.have.a
+          .property("error")
+          .eq("name, email and password are required");
+        res.body.should.have.property("httpCode").eq(400);
+      });
+      requester
         .put(registerEndpoint)
         .send(invalidRegister)
         .end((err, res) => {
@@ -70,15 +65,12 @@ describe("Authorization API endpoint", () => {
   });
   describe("GET/POST/DELETE /auth/signup", () => {
     it("should return a 405 status response", function (done) {
-      chai
-        .request(server)
-        .get(registerEndpoint)
-        .end((err, res) => {
-          res.should.have.status(405);
-          res.body.should.have.property("httpCode").eq(405);
-          res.body.should.have.a.property("error").eq("Method not allowed");
-          done();
-        });
+      requester.get(registerEndpoint).end((err, res) => {
+        res.should.have.status(405);
+        res.body.should.have.property("httpCode").eq(405);
+        res.body.should.have.a.property("error").eq("Method not allowed");
+        done();
+      });
     });
   });
 
@@ -92,8 +84,7 @@ describe("Authorization API endpoint", () => {
       password: "weakpassword",
     };
     it("should login a valid user and get a access_token", function (done) {
-      chai
-        .request(server)
+      requester
         .post(loginEndpoint)
         .send(validLogin)
         .end((err, res) => {
@@ -105,8 +96,7 @@ describe("Authorization API endpoint", () => {
         });
     });
     it("should get a login error validation", function (done) {
-      chai
-        .request(server)
+      requester
         .post(loginEndpoint)
         .send(invalidLogin)
         .end((err, res) => {
@@ -123,17 +113,15 @@ describe("Authorization API endpoint", () => {
   });
   describe("GET/PUT/DELETE /auth/signup", () => {
     it("should return a 405 status response", function (done) {
-      chai
-        .request(server)
-        .get("/auth/register")
-        .end((err, res) => {
-          res.should.have.status(405);
-          res.body.should.have.a.property("error").eq("Method not allowed");
-          done();
-        });
+      requester.get("/auth/register").end((err, res) => {
+        res.should.have.status(405);
+        res.body.should.have.a.property("error").eq("Method not allowed");
+        done();
+      });
     });
   });
   after(() => {
+    requester.close();
     User.findByEmail(validRegister.email)
       .then((user) => {
         if (user) user.destroy();

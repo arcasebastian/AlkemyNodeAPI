@@ -4,8 +4,13 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 chai.should();
 chai.use(chaiHttp);
+
 // TODO Validation errors testing
 describe("Movies API endpoint", () => {
+  let requester;
+  before(() => {
+    requester = chai.request(server).keepOpen();
+  });
   const baseEndpoint = "/movies";
   const newMovie = {
     title: "Tangled",
@@ -18,7 +23,7 @@ describe("Movies API endpoint", () => {
   let access_token = "";
   let id = "";
   before(() => {
-    chai.request(server).post("/auth/login", (err, res) => {
+    requester.post("/auth/login", (err, res) => {
       if (!err) {
         access_token = res.body.access_token;
       }
@@ -26,39 +31,32 @@ describe("Movies API endpoint", () => {
   });
   describe("Unauthorized /movies", () => {
     it("should get a 405 unauthorized status code", function () {
-      chai
-        .request(server)
-        .get(baseEndpoint)
-        .end((err, res) => {
-          res.should.have.status(405);
-        });
+      requester.get(baseEndpoint).end((err, res) => {
+        res.should.have.status(405);
+      });
     });
   });
   describe("OPTIONS /movies", () => {
     it("should get a valid preflight response", function (done) {
-      chai
-        .request(server)
-        .options(baseEndpoint)
-        .end((err, res) => {
-          res.should.have.status(204);
-          res.should.have.header("Access-Control-Allow-Origin", "*");
-          res.should.have.header(
-            "Access-Control-Allow-Methods",
-            "OPTIONS, GET, PUT, POST, DELETE"
-          );
-          res.should.have.header(
-            "Access-Control-Allow-Headers",
-            "Authorization,Cache-Control,Content-Type"
-          );
-          done();
-        });
+      requester.options(baseEndpoint).end((err, res) => {
+        res.should.have.status(204);
+        res.should.have.header("Access-Control-Allow-Origin", "*");
+        res.should.have.header(
+          "Access-Control-Allow-Methods",
+          "OPTIONS, GET, PUT, POST, DELETE"
+        );
+        res.should.have.header(
+          "Access-Control-Allow-Headers",
+          "Authorization,Cache-Control,Content-Type"
+        );
+        done();
+      });
     });
   });
   describe("POST /movies", () => {
     console.log(__dirname);
     it("should create a new genre", function (done) {
-      chai
-        .request(server)
+      requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
         .field(newMovie)
@@ -75,8 +73,7 @@ describe("Movies API endpoint", () => {
   });
   describe("GET /movies", () => {
     it("should return a list of movies", function (done) {
-      chai
-        .request(server)
+      requester
         .get(baseEndpoint)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -92,8 +89,7 @@ describe("Movies API endpoint", () => {
   });
   describe("GET /movies/:id", () => {
     it("should return a single genre", function (done) {
-      chai
-        .request(server)
+      requester
         .get(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -107,8 +103,7 @@ describe("Movies API endpoint", () => {
   describe("PUT /movies/:id", () => {
     newMovie.title = "Tangled Updated";
     it("should update a genre", function (done) {
-      chai
-        .request(server)
+      requester
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .field(newMovie)
@@ -125,8 +120,7 @@ describe("Movies API endpoint", () => {
   });
   describe("DELETE /movies/:id", () => {
     it("should delete genre", function (done) {
-      chai
-        .request(server)
+      requester
         .delete(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -138,5 +132,8 @@ describe("Movies API endpoint", () => {
           done();
         });
     });
+  });
+  after(() => {
+    requester.close();
   });
 });

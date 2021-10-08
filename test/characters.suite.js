@@ -2,11 +2,12 @@ const path = require("path");
 const server = require("../app");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+const User = require("../models/User");
 chai.should();
 chai.use(chaiHttp);
 // TODO Validation errors testing
-
 describe("Characters API endpoint", () => {
+  let requester;
   const baseEndpoint = "/characters";
   const newCharacter = {
     name: "Rapunzel",
@@ -21,12 +22,13 @@ describe("Characters API endpoint", () => {
   let access_token = "";
   let id = "";
   before(() => {
-    chai.request(server).post("/auth/login", (err, res) => {
+    requester = chai.request(server).keepOpen();
+    requester.post("/auth/login", (err, res) => {
       if (!err) {
         access_token = res.body.access_token;
       }
     });
-    chai.request(server).post("/movies", (err, res) => {
+    requester.post("/movies", (err, res) => {
       if (!err) {
         newCharacter.movies.push(
           res.body.filter((movie) => movie.title === "Tangled").id
@@ -34,41 +36,50 @@ describe("Characters API endpoint", () => {
       }
     });
   });
+
   describe("Unauthorized /characters", () => {
     it("should get a 405 unauthorized status code", function () {
-      chai
-        .request(server)
-        .get(baseEndpoint)
-        .end((err, res) => {
-          res.should.have.status(405);
-        });
+      requester.get(baseEndpoint).end((err, res) => {
+        res.should.have.status(405);
+      });
     });
   });
   describe("OPTIONS /characters", () => {
     it("should get a valid preflight response", function (done) {
-      chai
-        .request(server)
-        .options(baseEndpoint)
-        .end((err, res) => {
-          res.should.have.status(204);
-          res.should.have.header("Access-Control-Allow-Origin", "*");
-          res.should.have.header(
-            "Access-Control-Allow-Methods",
-            "OPTIONS, GET, PUT, POST, DELETE"
-          );
-          res.should.have.header(
-            "Access-Control-Allow-Headers",
-            "Authorization,Cache-Control,Content-Type"
-          );
-          done();
-        });
+      requester.options(baseEndpoint).end((err, res) => {
+        res.should.have.status(204);
+        res.should.have.header("Access-Control-Allow-Origin", "*");
+        res.should.have.header(
+          "Access-Control-Allow-Methods",
+          "OPTIONS, GET, PUT, POST, DELETE"
+        );
+        res.should.have.header(
+          "Access-Control-Allow-Headers",
+          "Authorization,Cache-Control,Content-Type"
+        );
+        done();
+      });
     });
   });
   describe("POST /characters", () => {
     console.log(__dirname);
     it("should create a new character", function (done) {
-      chai
-        .request(server)
+      requester
+        .post(baseEndpoint)
+        .set("Authorization", access_token)
+        .field(newCharacter)
+        //.attach("image", newCharacterImage)
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.should.be.a("object");
+          res.body.should.have
+            .property("status")
+            .eq("New character successfully created");
+          done();
+        });
+    });
+    it("should return a validation error", function (done) {
+      requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
         .field(newCharacter)
@@ -85,8 +96,7 @@ describe("Characters API endpoint", () => {
   });
   describe("GET /characters", () => {
     it("should return a list of characters", function (done) {
-      chai
-        .request(server)
+      requester
         .get(baseEndpoint)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -102,8 +112,7 @@ describe("Characters API endpoint", () => {
   });
   describe("GET /characters/:id", () => {
     it("should return a single character", function (done) {
-      chai
-        .request(server)
+      requester
         .get(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -124,8 +133,7 @@ describe("Characters API endpoint", () => {
   describe("PUT /characters/:id", () => {
     it("should update a character", function (done) {
       newCharacter.age = 30;
-      chai
-        .request(server)
+      requester
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .field(newCharacter)
@@ -142,8 +150,7 @@ describe("Characters API endpoint", () => {
   });
   describe("DELETE /characters/:id", () => {
     it("should delete character", function (done) {
-      chai
-        .request(server)
+      requester
         .delete(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
@@ -155,5 +162,8 @@ describe("Characters API endpoint", () => {
           done();
         });
     });
+  });
+  after(() => {
+    requester.close();
   });
 });
