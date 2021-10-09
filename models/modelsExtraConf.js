@@ -37,8 +37,8 @@ exports.addMethods = (sequelize) => {
       ],
     });
   };
-  character.prototype.updateMovies = async (newMovies) => {
-    await this.removeMovies(this.characters);
+  character.prototype.updateMovies = async function (newMovies) {
+    await this.removeMovies(this.movies);
     if (newMovies) {
       const newMoviesObj = await movie.findAll({
         where: { id: newMovies.split(",") },
@@ -95,7 +95,7 @@ exports.addMethods = (sequelize) => {
       ],
     });
   };
-  movie.prototype.updateCharacters = async (newCharacters) => {
+  movie.prototype.updateCharacters = async function (newCharacters) {
     await this.removeGenres(this.characters);
     if (newCharacters) {
       const newCharactersObject = await character.findAll({
@@ -105,7 +105,7 @@ exports.addMethods = (sequelize) => {
       await this.addCharacters(newCharactersObject);
     }
   };
-  movie.prototype.updateGenres = async (newGenres) => {
+  movie.prototype.updateGenres = async function (newGenres) {
     await this.removeGenres(this.genres);
     if (newGenres) {
       const newGenresObject = await genre.findAll({
