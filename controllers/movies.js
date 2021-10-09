@@ -1,4 +1,5 @@
-const Movie = require("../models/Movie");
+const sequelize = require("../models/sequelize");
+const Movie = sequelize.models.movie;
 const {
   normalizeError,
   checkValidationErrors,
@@ -8,9 +9,7 @@ exports.post = async (req, res, next) => {
   const validationError = checkValidationErrors(req);
   if (validationError) return next(validationError);
 
-  if (!req.file) {
-    return next(normalizeError("Image is required", 400));
-  }
+  if (!req.file) return next(normalizeError("Image is required", 400));
   const { title, rating, releaseDate, characters = "", genres = "" } = req.body;
   const imageFile = req.file.filename;
   try {

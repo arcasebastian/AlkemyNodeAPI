@@ -1,7 +1,8 @@
 const express = require("express");
 const controller = require("../controllers/genres");
 const { body } = require("express-validator");
-const Genre = require("../models/Genre");
+const sequelize = require("../models/sequelize");
+const Genre = sequelize.models.genre;
 const { isAuth } = require("../middleware/isAuthorized");
 const router = express.Router();
 router.post(

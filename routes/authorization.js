@@ -3,8 +3,8 @@ const { body } = require("express-validator");
 const router = express.Router();
 
 const controller = require("../controllers/authorization");
-const User = require("../models/User");
-
+const sequelize = require("../models/sequelize");
+const User = sequelize.models.user;
 const registerMethodsAllowed = ["PUT"];
 const loginMethodsAllowed = ["POST"];
 

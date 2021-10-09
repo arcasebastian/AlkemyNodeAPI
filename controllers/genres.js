@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
-const Genre = require("../models/Genre");
+const sequelize = require("../models/sequelize");
+const Genre = sequelize.models.genre;
 const { normalizeError } = require("../util/normalizeError");
 
 exports.post = async (req, res, next) => {

@@ -1,7 +1,8 @@
 const express = require("express");
 const controller = require("../controllers/movies");
 const { body } = require("express-validator");
-const Movie = require("../models/Movie");
+const sequelize = require("../models/sequelize");
+const Movie = sequelize.models.movie;
 const { isAuth } = require("../middleware/isAuthorized");
 const router = express.Router();
 

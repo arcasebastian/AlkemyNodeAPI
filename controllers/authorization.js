@@ -2,7 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const env = require("../env/env.json");
-const User = require("../models/User");
+const sequelize = require("../models/sequelize");
+const User = sequelize.models.user;
 const { normalizeError } = require("../util/normalizeError");
 
 exports.register = async (req, res, next) => {
