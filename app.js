@@ -8,9 +8,9 @@ const genresRouter = require("./routes/genres");
 const moviesRouter = require("./routes/movies");
 const charactersRouter = require("./routes/characters");
 
-const { normalizeError } = require("./util/normalizeError");
-const { uploadFile } = require("./util/storage");
+const { uploadFile, deleteFile } = require("./util/storage");
 const path = require("path");
+const { isAuth } = require("./middleware/isAuthorized");
 
 const Character = require("./models/Character");
 const Movie = require("./models/Movie");
@@ -44,6 +44,9 @@ app.use("/characters", charactersRouter);
 
 // Generic Error Handling
 app.use((error, req, res, next) => {
+  if (req.file) {
+    deleteFile(`/images/${req.file.filename}`);
+  }
   const httpCode = error.statusCode || 500;
   res.status(httpCode).json({
     error: error.message,

@@ -41,7 +41,7 @@ const deleteFile = (filePath) => {
   let actualPath = path.normalize(__dirname + "/../public" + filePath);
   fs.unlink(actualPath, (err) => {
     if (err) {
-      throw err;
+      console.log(err, "cant be deleted");
     }
   });
 };

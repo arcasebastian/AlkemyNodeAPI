@@ -1,7 +1,6 @@
 const { validationResult } = require("express-validator");
 const Genre = require("../models/Genre");
 const { normalizeError } = require("../util/normalizeError");
-const { deleteFile } = require("../util/storage");
 
 exports.post = async (req, res, next) => {
   const errors = validationResult(req);
@@ -59,7 +58,6 @@ exports.put = async (req, res, next) => {
       const imageFile = req.file.filename;
       if (!imageFile) return next(normalizeError("Invalid file", 400));
       genreToUpdate.name = name;
-      deleteFile(genreToUpdate.image);
       genreToUpdate.image = `/images/${imageFile}`;
       if (await genreToUpdate.save())
         return res.status(200).json({ status: "Genre successfully updated" });
@@ -75,10 +73,6 @@ exports.delete = async (req, res, next) => {
     const genreToUpdate = await Genre.getOne(requestedId);
     if (!genreToUpdate) {
       return next(normalizeError("Not found", 404));
-    }
-    const movies = await genreToUpdate.countMovies();
-    if (movies > 0) {
-      return next(normalizeError("Genre cant be deleted"));
     }
     await genreToUpdate.destroy();
     return res.status(200).json({ status: "Genre was successfully deleted" });
