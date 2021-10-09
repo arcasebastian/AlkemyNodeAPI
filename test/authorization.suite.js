@@ -1,7 +1,8 @@
 const server = require("../app");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const User = require("../models/User");
+const sequelize = require("../models/sequelize");
+const User = sequelize.models.user;
 chai.should();
 chai.use(chaiHttp);
 const requester = chai.request(server).keepOpen();
