@@ -33,9 +33,9 @@ describe("Genres API endpoint", () => {
       });
   });
   describe("Unauthorized /genres", () => {
-    it("should get a 405 unauthorized status code", function () {
+    it("should get a 401 unauthorized status code", function () {
       requester.get(baseEndpoint).end((err, res) => {
-        res.should.have.status(405);
+        res.should.have.status(401);
       });
     });
   });

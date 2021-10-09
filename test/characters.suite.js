@@ -41,9 +41,9 @@ describe("Characters API endpoint", () => {
   });
 
   describe("Unauthorized /characters", () => {
-    it("should get a 405 unauthorized status code", function () {
+    it("should get a 401 unauthorized status code", function () {
       requester.get(baseEndpoint).end((err, res) => {
-        res.should.have.status(405);
+        res.should.have.status(401);
       });
     });
   });
@@ -65,7 +65,6 @@ describe("Characters API endpoint", () => {
     });
   });
   describe("POST /characters", () => {
-    console.log(__dirname);
     it("should create a new character", function (done) {
       requester
         .post(baseEndpoint)

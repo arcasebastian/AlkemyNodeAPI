@@ -16,6 +16,8 @@ describe("Movies API endpoint", () => {
     title: "Tangled",
     releaseDate: "11/11/2010",
     rating: 4,
+    genres: [],
+    characters: [],
   };
   const newMovieImg = path.join(__dirname, "test_files", "movie.jpg");
   let access_token = "";
@@ -35,9 +37,9 @@ describe("Movies API endpoint", () => {
       });
   });
   describe("Unauthorized /movies", () => {
-    it("should get a 405 unauthorized status code", function () {
+    it("should get a 401 unauthorized status code", function () {
       requester.get(baseEndpoint).end((err, res) => {
-        res.should.have.status(405);
+        res.should.have.status(401);
       });
     });
   });
@@ -65,7 +67,7 @@ describe("Movies API endpoint", () => {
         .post(baseEndpoint)
         .set("Authorization", access_token)
         .field(newMovie)
-        //.attach("image", newMovieImg)
+        .attach("image", newMovieImg)
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.a("object");
@@ -113,7 +115,7 @@ describe("Movies API endpoint", () => {
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .field(newMovie)
-        //.attach("image", newMovieImg)
+        .attach("image", newMovieImg)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
