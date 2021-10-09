@@ -20,18 +20,22 @@ const validateFileType = (req, file, cb) => {
 };
 const multerFileUpload = multer({
   storage: storage,
-  limits: { fileSize: 100000 },
+  limits: { fileSize: 1000000 },
   fileFilter: validateFileType,
 }).single("image");
 
 const uploadFile = (req, res, next) => {
-  multerFileUpload(req, res, (err) => {
-    if (err) {
-      next(normalizeError(err, 500));
-    } else {
-      next();
-    }
-  });
+  if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    multerFileUpload(req, res, (err) => {
+      if (err) {
+        next(normalizeError(err, 500));
+      } else {
+        next();
+      }
+    });
+  } else {
+    next();
+  }
 };
 const deleteFile = (filePath) => {
   let actualPath = path.normalize(__dirname + "/../public" + filePath);
