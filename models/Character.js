@@ -15,12 +15,21 @@ Character.init(
       allowNull: false,
       unique: true,
     },
-    type: {
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    age: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    image: {
-      type: DataTypes.STRING,
+    weight: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    history: {
+      type: DataTypes.TEXT,
+      length: "medium",
       allowNull: false,
     },
   },
