@@ -1,9 +1,7 @@
-const sequelizePool = require("../util/database");
-const { Model, DataTypes } = require("sequelize");
-class Character extends Model {}
+const { DataTypes } = require("sequelize");
 
-Character.init(
-  {
+module.exports = (sequelize) => {
+  sequelize.define("character", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -32,10 +30,5 @@ Character.init(
       length: "medium",
       allowNull: false,
     },
-  },
-  {
-    sequelize: sequelizePool,
-    modelName: "character",
-  }
-);
-module.exports = Character;
+  });
+};

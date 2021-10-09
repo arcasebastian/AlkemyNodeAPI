@@ -1,7 +1,7 @@
 const express = require("express");
 const http = require("http");
 const bodyParser = require("body-parser");
-const sequelize = require("./util/database");
+const sequelize = require("./models/sequelize");
 //routes
 const authorizationRouter = require("./routes/authorization");
 const genresRouter = require("./routes/genres");
@@ -12,11 +12,11 @@ const { uploadFile, deleteFile } = require("./util/storage");
 const path = require("path");
 const { isAuth } = require("./middleware/isAuthorized");
 
-const Character = require("./models/Character");
-const Movie = require("./models/Movie");
-const MovieCharacter = require("./models/MovieCharacter");
-const Genre = require("./models/Genre");
-const GenreMovie = require("./models/GenreMovie");
+const Character = require("./models/baseModels/Character");
+const Movie = require("./models/baseModels/Movie");
+const MovieCharacter = require("./models/baseModels/MovieCharacter");
+const Genre = require("./models/baseModels/Genre");
+const GenreMovie = require("./models/baseModels/GenreMovie");
 
 const app = express();
 app.use(bodyParser.json());
@@ -55,18 +55,6 @@ app.use((error, req, res, next) => {
   });
 });
 const server = http.createServer(app);
-Movie.belongsToMany(Genre, {
-  through: GenreMovie,
-});
-Genre.belongsToMany(Movie, {
-  through: GenreMovie,
-});
-Character.belongsToMany(Movie, {
-  through: MovieCharacter,
-});
-Movie.belongsToMany(Character, {
-  through: MovieCharacter,
-});
 sequelize.sync();
 
 var os = require("os");

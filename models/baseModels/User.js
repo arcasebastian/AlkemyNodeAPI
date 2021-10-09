@@ -1,19 +1,7 @@
-const { Sequelize, DataTypes, Model } = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 
-const sequelizePool = require("../util/database");
-class User extends Model {
-  static findByEmail(emailToFind) {
-    return this.findOne({
-      where: {
-        email: emailToFind,
-        status: 1,
-      },
-    });
-  }
-}
-
-User.init(
-  {
+module.exports = (sequelize) => {
+  sequelize.define("user", {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -38,10 +26,6 @@ User.init(
       allowNull: false,
       default: 1,
     },
-  },
-  {
-    sequelize: sequelizePool,
-    modelName: "user",
-  }
-);
-module.exports = User;
+  });
+};
+class User extends Model {}
