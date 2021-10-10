@@ -2,7 +2,9 @@ const path = require("path");
 const server = require("../app");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const User = require("../models/User");
+
+const sequelize = require("../models/sequelize");
+const User = sequelize.models.user;
 chai.should();
 chai.use(chaiHttp);
 const user = {
@@ -17,9 +19,8 @@ describe("Characters API endpoint", () => {
     name: "Rapunzel",
     age: 21,
     weight: 52,
-    description:
-      "Rapunzel may have lived her entire life locked inside a hidden tower, but Rapunzel is no damsel in distress. The girl with the 70 feet of golden hair is an energetic, inquisitive teenager who fills her days with art, books, and imagination. Rapunzel is full of curiosity about the outside world, and she can't help but feel that her true destiny lies outside the lonely tower walls. Rapunzel has always obeyed Mother Gothel by staying hidden away and keeping her magical hair a secret... but with her 18th birthday just a day away, she is fed up with her sheltered life and ready for adventure. When a charming thief seeks refuge in her tower, Rapunzel defies Gothel and seizes the opportunity to answer the call of the kingdom. With the unwilling Flynn Rider along for the journey, Rapunzel leaves the tower for the first time, and begins a hilarious, hair-raising journey that will untangle many secrets along the way.",
-    movies: [],
+    history:
+      "Rapunzel may have lived her entire life locked inside a hidden tower. Rapunzel is full of curiosity about the outside world, and she can't help but feel that her true destiny lies outside the lonely tower walls.",
   };
   const newCharacterImage = path.join(__dirname, "test_files", "rapunzel.jpg");
 
@@ -40,14 +41,14 @@ describe("Characters API endpoint", () => {
       });
   });
 
-  describe("Unauthorized /characters", () => {
+  describe("0 - Unauthorized /characters", () => {
     it("should get a 401 unauthorized status code", function () {
       requester.get(baseEndpoint).end((err, res) => {
         res.should.have.status(401);
       });
     });
   });
-  describe("OPTIONS /characters", () => {
+  describe("1 - OPTIONS /characters", () => {
     it("should get a valid preflight response", function (done) {
       requester.options(baseEndpoint).end((err, res) => {
         res.should.have.status(204);
@@ -64,14 +65,15 @@ describe("Characters API endpoint", () => {
       });
     });
   });
-  describe("POST /characters", () => {
+  describe("2 - POST /characters", () => {
     it("should create a new character", function (done) {
       requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
         .field(newCharacter)
-        //.attach("image", newCharacterImage)
+        .attach("image", newCharacterImage)
         .end((err, res) => {
+          console.log(res);
           res.should.have.status(201);
           res.body.should.be.a("object");
           res.body.should.have
@@ -80,14 +82,14 @@ describe("Characters API endpoint", () => {
           done();
         });
     });
-    xit("should return a validation error", function (done) {
+    it("should return a validation error", function (done) {
       const invalidCharacter = { ...newCharacter };
       invalidCharacter.name = "";
       requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
         .field(invalidCharacter)
-        //.attach("image", newCharacterImage)
+        .attach("image", newCharacterImage)
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.to.include.all.keys("error", "httpCode");
@@ -95,7 +97,7 @@ describe("Characters API endpoint", () => {
         });
     });
   });
-  describe("GET /characters", () => {
+  describe("3 - GET /characters", () => {
     it("should return a list of characters", function (done) {
       requester
         .get(baseEndpoint)
@@ -111,7 +113,7 @@ describe("Characters API endpoint", () => {
         });
     });
   });
-  describe("GET /characters/:id", () => {
+  describe("4 - GET /characters/:id", () => {
     it("should return a single character", function (done) {
       requester
         .get(`${baseEndpoint}/${id}`)
@@ -120,6 +122,7 @@ describe("Characters API endpoint", () => {
           res.should.have.status(200);
           res.body.should.be.a("object");
           res.body.should.to.include.all.keys(
+            "id",
             "name",
             "age",
             "weight",
@@ -140,14 +143,14 @@ describe("Characters API endpoint", () => {
         });
     });
   });
-  describe("PUT /characters/:id", () => {
+  describe("5 - PUT /characters/:id", () => {
     it("should update a character", function (done) {
       newCharacter.age = 30;
       requester
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .field(newCharacter)
-        //.attach("image", newCharacterImage)
+        .attach("image", newCharacterImage)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
@@ -158,7 +161,7 @@ describe("Characters API endpoint", () => {
         });
     });
   });
-  describe("DELETE /characters/:id", () => {
+  describe("6 - DELETE /characters/:id", () => {
     it("should delete character", function (done) {
       requester
         .delete(`${baseEndpoint}/${id}`)

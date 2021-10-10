@@ -1,5 +1,5 @@
+const { deleteFile } = require("../util/storage");
 exports.setRelations = (sequelize) => {
-  console.log(sequelize.models);
   const { character, movie, genre, movie_character, genre_movie } =
     sequelize.models;
   movie.belongsToMany(genre, {
@@ -22,14 +22,15 @@ exports.addMethods = (sequelize) => {
   character.getList = (filter) => {
     return character.findAll({ attributes: ["id", "name", "image"] });
   };
-  character.getOne = (id) => {
+  character.getDetails = (id) => {
     return character.findOne({
       where: { id: id },
-      attributes: ["id", "name", "image", "age", "weight"],
+      attributes: ["id", "name", "image", "age", "weight", "history"],
       include: [
         {
           model: movie,
           as: "movies",
+          attributes: ["id", "title", "url"],
           through: {
             attributes: [],
           },
@@ -48,11 +49,25 @@ exports.addMethods = (sequelize) => {
     }
   };
   // Genres
-  genre.getAll = (options = null) => {
-    return genre.findAll({ attributes: ["id", "name", "image"] });
+  genre.getList = (options = null) => {
+    return genre.findAll({
+      attributes: ["id", "name", "image"],
+    });
   };
-  genre.getOne = (id) => {
-    return genre.findOne({ where: { id: id } });
+  genre.getDetails = (id) => {
+    return genre.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: movie,
+          as: "movies",
+          attributes: ["id", "title", "url"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
   };
 
   //User
@@ -66,12 +81,12 @@ exports.addMethods = (sequelize) => {
   };
 
   //Movies
-  movie.getAll = (options = null) => {
+  movie.getList = (options = null) => {
     return movie.findAll({
       attributes: ["id", "title", "image", "releaseDate"],
     });
   };
-  movie.getOne = (id) => {
+  movie.getDetails = (id) => {
     return movie.findOne({
       where: { id: id },
       attributes: ["id", "title", "image", "releaseDate"],
@@ -95,24 +110,25 @@ exports.addMethods = (sequelize) => {
       ],
     });
   };
-  movie.prototype.updateCharacters = async function (newCharacters) {
-    await this.removeGenres(this.characters);
-    if (newCharacters) {
-      const newCharactersObject = await character.findAll({
-        where: { id: newCharacters },
-        attributes: ["id"],
-      });
-      await this.addCharacters(newCharactersObject);
-    }
-  };
   movie.prototype.updateGenres = async function (newGenres) {
     await this.removeGenres(this.genres);
     if (newGenres) {
       const newGenresObject = await genre.findAll({
-        where: { id: newGenres },
+        where: { id: newGenres.split(",") },
         attributes: ["id"],
       });
       await this.addGenres(newGenresObject);
     }
   };
+  for (let model of [genre, movie, character]) {
+    model.addHook("beforeDestroy", (instance, options) => {
+      deleteFile(instance.image);
+    });
+    model.addHook("beforeUpdate", (instance, options) => {
+      let key = "image";
+      if (instance.getDataValue(key) !== instance.previous(key)) {
+        deleteFile(instance.previous(key));
+      }
+    });
+  }
 };

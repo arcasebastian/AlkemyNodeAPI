@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const { deleteFile } = require("../../util/storage");
 module.exports = (sequelize) => {
   sequelize.define("movie", {
     id: {
@@ -23,6 +24,12 @@ module.exports = (sequelize) => {
     image: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    url: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `/movies/${this.id}`;
+      },
     },
   });
 };

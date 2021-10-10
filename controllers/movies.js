@@ -4,43 +4,46 @@ const {
   normalizeError,
   checkValidationErrors,
 } = require("../util/normalizeError");
+const { matchedData } = require("express-validator");
 
 exports.post = async (req, res, next) => {
   const validationError = checkValidationErrors(req);
   if (validationError) return next(validationError);
-
   if (!req.file) return next(normalizeError("Image is required", 400));
-  const { title, rating, releaseDate, characters = "", genres = "" } = req.body;
-  const imageFile = req.file.filename;
+
   try {
-    const newMovie = new Movie({
-      title: title,
-      rating: rating,
-      releaseDate: releaseDate,
-      image: `/images/${imageFile}`,
-    });
-    if (await newMovie.save()) {
-      await newMovie.updateCharacters(characters.split(","));
-      await newMovie.updateGenres(genres.split(","));
-      return res.status(201).json({ status: "New movie successfully created" });
-    }
+    const bodyData = matchedData(req, { locations: ["body"] });
+    bodyData.image = `/images/${req.file.filename}`;
+
+    const newMovie = new Movie(bodyData);
+
+    await newMovie.save();
+    await newMovie.updateGenres(bodyData.genres);
+    return res.status(201).json({ status: "New movie successfully created" });
   } catch (err) {
     next(err);
   }
 };
 
 exports.getAll = async (req, res, next) => {
-  const movies = await Movie.getAll();
-  return res.status(200).json(movies);
+  try {
+    const movies = await Movie.getList();
+    return res.status(200).json(movies);
+  } catch (err) {
+    return next(normalizeError(err.message, 500));
+  }
 };
 exports.getOne = async (req, res, next) => {
   const validationError = checkValidationErrors(req);
   if (validationError) return next(validationError);
-
-  const requestedId = req.params.id;
-  const movieDetails = await Movie.getOne(requestedId);
-  if (!movieDetails) return next(normalizeError("Not Found", 404));
-  return res.status(200).json(movieDetails.toJSON());
+  try {
+    const requestedId = matchedData(req, { locations: ["params"] }).id;
+    const movieDetails = await Movie.getDetails(requestedId);
+    if (!movieDetails) return next(normalizeError("Not Found", 404));
+    return res.status(200).json(movieDetails);
+  } catch (err) {
+    return next(normalizeError(err.message, 500));
+  }
 };
 
 exports.put = async (req, res, next) => {
@@ -48,30 +51,26 @@ exports.put = async (req, res, next) => {
   if (validationError) return next(validationError);
   if (!req.file) return next(normalizeError("Image is required", 400));
 
-  const findMovie = await Movie.getOne(req.params.id);
-  if (!findMovie) return next(normalizeError("Not found", 404));
-
-  const { title, rating, releaseDate, characters = "", genres = "" } = req.body;
-  const imageFile = req.file.filename;
   try {
-    findMovie.setAttributes({
-      title: title,
-      rating: rating,
-      releaseDate: releaseDate,
-      image: `/images/${imageFile}`,
-    });
-    await findMovie.updateCharacters(characters.split(","));
-    await findMovie.updateGenres(genres.split(","));
-    if (await findMovie.save()) {
-      return res.status(200).json({ status: "Movie successfully updated" });
-    }
+    const requestedId = matchedData(req, { locations: ["params"] }).id;
+
+    const findMovie = await Movie.findByPk(requestedId);
+    if (!findMovie) return next(normalizeError("Not found", 404));
+    const bodyData = matchedData(req, { locations: ["body"] });
+    bodyData.image = `/images/${req.file.filename}`;
+    findMovie.setAttributes(bodyData);
+    await findMovie.updateGenres(bodyData.genres);
+    await findMovie.save();
+    return res.status(200).json({ status: "Movie successfully updated" });
   } catch (err) {
     next(err);
   }
 };
 exports.delete = async (req, res, next) => {
-  const requestedId = req.params.id;
+  const validationError = checkValidationErrors(req);
+  if (validationError) return next(validationError);
   try {
+    const requestedId = matchedData(req, { locations: ["params"] }).id;
     const movieToDelete = await Movie.findByPk(requestedId);
     if (!movieToDelete) return next(normalizeError("Not Found", 404));
     await movieToDelete.destroy();

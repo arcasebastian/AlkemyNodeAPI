@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const { deleteFile } = require("../../util/storage");
 
 module.exports = (sequelize) => {
   sequelize.define("character", {
@@ -29,6 +30,12 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       length: "medium",
       allowNull: false,
+    },
+    url: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `/characters/${this.id}`;
+      },
     },
   });
 };
