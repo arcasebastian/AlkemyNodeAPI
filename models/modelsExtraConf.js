@@ -20,7 +20,11 @@ exports.addMethods = (sequelize) => {
   const { character, movie, genre, user } = sequelize.models;
   // Characters
   character.getList = (filter) => {
-    return character.findAll({ attributes: ["id", "name", "image"] });
+    return character.findAll({
+      attributes: ["id", "url", "name", "image"],
+      include: [{ model: movie, attributes: [] }],
+      where: filter,
+    });
   };
   character.getDetails = (id) => {
     return character.findOne({
@@ -30,7 +34,7 @@ exports.addMethods = (sequelize) => {
         {
           model: movie,
           as: "movies",
-          attributes: ["id", "title", "url"],
+          attributes: ["id", "url", "title"],
           through: {
             attributes: [],
           },
@@ -49,19 +53,20 @@ exports.addMethods = (sequelize) => {
     }
   };
   // Genres
-  genre.getList = (options = null) => {
+  genre.getList = () => {
     return genre.findAll({
-      attributes: ["id", "name", "image"],
+      attributes: ["id", "url", "name", "image"],
     });
   };
   genre.getDetails = (id) => {
     return genre.findOne({
       where: { id: id },
+      attributes: ["name", "image"],
       include: [
         {
           model: movie,
           as: "movies",
-          attributes: ["id", "title", "url"],
+          attributes: ["id", "url", "title"],
           through: {
             attributes: [],
           },
@@ -81,9 +86,17 @@ exports.addMethods = (sequelize) => {
   };
 
   //Movies
-  movie.getList = (options = null) => {
+  movie.getList = (filter, order) => {
+    let orderBy = null;
+    if (order) {
+      orderBy = [["releaseDate", order]];
+    }
+    console.log(orderBy);
     return movie.findAll({
-      attributes: ["id", "title", "image", "releaseDate"],
+      attributes: ["id", "url", "title", "image", "releaseDate"],
+      include: [{ model: genre, attributes: [] }],
+      where: filter,
+      order: orderBy,
     });
   };
   movie.getDetails = (id) => {
@@ -94,7 +107,7 @@ exports.addMethods = (sequelize) => {
         {
           model: genre,
           as: "genres",
-          attributes: ["id", "name"],
+          attributes: ["id", "url", "name"],
           through: {
             attributes: [],
           },
@@ -102,7 +115,7 @@ exports.addMethods = (sequelize) => {
         {
           model: character,
           as: "characters",
-          attributes: ["id", "name"],
+          attributes: ["id", "url", "name"],
           through: {
             attributes: [],
           },
@@ -121,6 +134,11 @@ exports.addMethods = (sequelize) => {
     }
   };
   for (let model of [genre, movie, character]) {
+    model.prototype.toJSON = function () {
+      let attributes = Object.assign({}, this.get());
+      delete attributes["id"];
+      return attributes;
+    };
     model.addHook("beforeDestroy", (instance, options) => {
       deleteFile(instance.image);
     });

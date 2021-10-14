@@ -1,5 +1,4 @@
 const { DataTypes } = require("sequelize");
-const { deleteFile } = require("../../util/storage");
 module.exports = (sequelize) => {
   sequelize.define("movie", {
     id: {

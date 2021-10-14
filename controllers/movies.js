@@ -5,6 +5,7 @@ const {
   checkValidationErrors,
 } = require("../util/normalizeError");
 const { matchedData } = require("express-validator");
+const { Op } = require("sequelize");
 
 exports.post = async (req, res, next) => {
   const validationError = checkValidationErrors(req);
@@ -26,8 +27,11 @@ exports.post = async (req, res, next) => {
 };
 
 exports.getAll = async (req, res, next) => {
+  const validationError = checkValidationErrors(req);
+  if (validationError) return next(validationError);
   try {
-    const movies = await Movie.getList();
+    const query = matchedData(req);
+    const movies = await Movie.getList(setFilter(query), query.order);
     return res.status(200).json(movies);
   } catch (err) {
     return next(normalizeError(err.message, 500));
@@ -79,3 +83,18 @@ exports.delete = async (req, res, next) => {
     return next(err);
   }
 };
+function setFilter(validParams) {
+  const { title, genre } = validParams;
+  const filter = {};
+  if (title) {
+    filter.title = {
+      [Op.like]: `%${title}%`,
+    };
+  }
+  if (genre) {
+    filter["$genre.id$"] = {
+      [Op.eq]: genre,
+    };
+  }
+  return filter;
+}

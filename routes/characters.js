@@ -1,5 +1,5 @@
 const express = require("express");
-const { body, param } = require("express-validator");
+const { body, param, query } = require("express-validator");
 const { isInt } = require("validator");
 
 const { isAuth } = require("../middleware/isAuthorized");
@@ -52,7 +52,37 @@ router.post(
   }),
   controller.post
 );
-router.get("/", isAuth, controller.getAll);
+router.get(
+  "/",
+  isAuth,
+  [
+    query("name", "Name search param must be a string.")
+      .optional()
+      .notEmpty()
+      .isString(),
+    query("age", "Age filter param must be a integer")
+      .optional()
+      .notEmpty()
+      .isInt(),
+    query("weight", "Weight filter param must be a decimal value")
+      .optional()
+      .notEmpty()
+      .isDecimal(),
+    query(
+      "movies",
+      "Movies filter values must be composed of integers separated by commas"
+    )
+      .optional()
+      .notEmpty()
+      .custom((values) => {
+        for (let value of values.split(",")) {
+          if (!isInt(value)) return Promise.reject();
+        }
+        return Promise.resolve();
+      }),
+  ],
+  controller.getAll
+);
 router.get(
   "/:id",
   isAuth,
@@ -66,7 +96,7 @@ router.put(
   validationChain,
   body("name").custom((value, { req }) => {
     return Character.findOne({ where: { name: value } }).then((character) => {
-      if (character.id != req.params.id)
+      if (character && character.id != req.params.id)
         return Promise.reject(
           "Character name is already registered and cant be changed"
         );

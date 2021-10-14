@@ -1,6 +1,6 @@
 const express = require("express");
 const controller = require("../controllers/movies");
-const { body, param } = require("express-validator");
+const { body, param, query } = require("express-validator");
 const sequelize = require("../models/sequelize");
 const Movie = sequelize.models.movie;
 const { isAuth } = require("../middleware/isAuthorized");
@@ -44,7 +44,25 @@ router.post(
   }),
   controller.post
 );
-router.get("/", isAuth, controller.getAll);
+router.get(
+  "/",
+  isAuth,
+  [
+    query("title", "Title query param must be a string.")
+      .optional()
+      .notEmpty()
+      .isString(),
+    query("genre", "Genre filter param must be a integer.")
+      .optional()
+      .notEmpty()
+      .isInt(),
+    query("order", "Order value must be ASC or DESC")
+      .optional()
+      .isString()
+      .isIn(["ASC", "DESC"]),
+  ],
+  controller.getAll
+);
 router.get(
   "/:id",
   isAuth,
@@ -58,7 +76,7 @@ router.put(
   validationChain,
   body("title").custom((value, { req }) => {
     return Movie.findOne({ where: { title: value } }).then((movie) => {
-      if (movie.id != req.params.id)
+      if (movie && movie.id != req.params.id)
         return Promise.reject(
           "Movie name is already registered and cant be changed"
         );

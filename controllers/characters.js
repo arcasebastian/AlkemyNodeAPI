@@ -5,6 +5,7 @@ const {
   normalizeError,
   checkValidationErrors,
 } = require("../util/normalizeError");
+const { Op } = require("sequelize");
 
 exports.post = async (req, res, next) => {
   const validationError = checkValidationErrors(req);
@@ -25,8 +26,11 @@ exports.post = async (req, res, next) => {
 };
 
 exports.getAll = async (req, res, next) => {
+  const validationError = checkValidationErrors(req);
+  if (validationError) return next(validationError);
   try {
-    const charactersList = await Character.getList("");
+    const query = matchedData(req);
+    const charactersList = await Character.getList(setFilter(query));
     return res.status(200).json(charactersList);
   } catch (err) {
     return next(normalizeError(err.message, 500));
@@ -76,3 +80,36 @@ exports.delete = async (req, res, next) => {
     return next(normalizeError(err.message, 500));
   }
 };
+
+function setFilter(validParams) {
+  const { name, age, weight, movies } = validParams;
+  console.log(validParams);
+  const filter = {};
+  if (name) {
+    filter.name = {
+      [Op.like]: `%${name}%`,
+    };
+  }
+  if (age) {
+    filter.age = {
+      [Op.eq]: age,
+    };
+  }
+  if (age) {
+    filter.age = {
+      [Op.eq]: age,
+    };
+  }
+  if (weight) {
+    filter.weight = {
+      [Op.eq]: weight,
+    };
+  }
+  if (movies) {
+    filter["$movies.id$"] = {
+      [Op.in]: movies.split(","),
+    };
+  }
+  console.log(filter);
+  return filter;
+}
