@@ -1,7 +1,9 @@
 {
   "database": "disney_api",
-  "databaseUser": "disneyUser",
-  "databasePassword": "ADJqi1fda21",
+  "databaseUser": "root",
+  "databasePassword": "111111",
   "databaseHost": "localhost",
-  "jwtSecret": ""
+  "jwtSecret": "ASDQiq10w3jADBja2oihdal2ssSAS",
+  "tokenExpires": "2h"
 }
+

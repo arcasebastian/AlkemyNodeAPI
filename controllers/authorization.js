@@ -1,35 +1,40 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
 const env = require("../env/env.json");
 const sequelize = require("../models/sequelize");
 const User = sequelize.models.user;
-const { normalizeError } = require("../util/normalizeError");
+const {
+  normalizeError,
+  checkValidationErrors,
+} = require("../util/normalizeError");
 
 exports.register = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const firstError = errors.array({ onlyFirstError: true })[0];
-    const errorCode = firstError.msg.includes("already") ? 409 : 400;
-    return next(normalizeError(firstError.msg, errorCode));
-  }
-  const { name, email, password } = req.body;
-  const newUser = new User({
-    name: name,
-    password: await bcrypt.hash(password, 12),
-    email: email,
-    status: 1,
-  });
-  if (await newUser.save()) {
-    res.status(201).json({ status: "User registered successfully" });
+  const validationError = checkValidationErrors(req);
+  if (validationError) return next(validationError);
+  try {
+    const { name, email, password } = req.body;
+    const newUser = new User({
+      name: name,
+      password: await bcrypt.hash(password, 12),
+      email: email,
+      status: 1,
+    });
+    if (await newUser.save()) {
+      res.status(201).json({ status: "User registered successfully" });
+    }
+  } catch (err) {
+    return next(err.message, 500);
   }
 };
 
 exports.login = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (errors.isEmpty()) {
+  const validationError = checkValidationErrors(req);
+  if (validationError)
+    return next(normalizeError("Invalid email or password", 401));
+  try {
     const { email, password } = req.body;
     const user = await User.findByEmail(email);
+    if (!user) return next(normalizeError("Invalid email or password", 401));
     if (await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
         {
@@ -38,10 +43,11 @@ exports.login = async (req, res, next) => {
           name: user.name,
         },
         env.jwtSecret,
-        { expiresIn: "2h" }
+        { expiresIn: env.tokenExpires }
       );
       return res.status(200).json({ access_token: token, username: user.name });
     }
+  } catch (err) {
+    return next(err.message, 500);
   }
-  return next(normalizeError("Invalid email or password", 401));
 };
