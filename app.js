@@ -10,13 +10,6 @@ const charactersRouter = require("./routes/characters");
 
 const { uploadFile, deleteFile } = require("./util/storage");
 const path = require("path");
-const { isAuth } = require("./middleware/isAuthorized");
-
-const Character = require("./models/baseModels/Character");
-const Movie = require("./models/baseModels/Movie");
-const MovieCharacter = require("./models/baseModels/MovieCharacter");
-const Genre = require("./models/baseModels/Genre");
-const GenreMovie = require("./models/baseModels/GenreMovie");
 
 const app = express();
 app.use(bodyParser.json());
@@ -47,6 +40,7 @@ app.use((error, req, res, next) => {
   if (req.file) {
     deleteFile(`/images/${req.file.filename}`);
   }
+  console.error(error.message);
   const httpCode = error.statusCode || 500;
   res.status(httpCode).json({
     error: error.message,

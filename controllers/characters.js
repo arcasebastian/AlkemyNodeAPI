@@ -84,7 +84,6 @@ exports.delete = async (req, res, next) => {
 
 function setFilter(validParams) {
   const { name, age, weight, movies } = validParams;
-  console.log(validParams);
   const filter = {};
   if (name) {
     filter.name = {
@@ -111,6 +110,5 @@ function setFilter(validParams) {
       [Op.in]: movies.split(","),
     };
   }
-  console.log(filter);
   return filter;
 }

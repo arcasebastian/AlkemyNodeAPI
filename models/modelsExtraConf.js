@@ -58,7 +58,6 @@ exports.addMethods = (sequelize) => {
     if (order) {
       orderBy = [["releaseDate", order]];
     }
-    console.log(orderBy);
     return movie.findAll({
       attributes: ["id", "url", "title", "image", "releaseDate"],
       include: [{ model: genre, attributes: [] }],

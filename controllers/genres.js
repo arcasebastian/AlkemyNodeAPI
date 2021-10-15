@@ -62,7 +62,6 @@ exports.put = async (req, res, next) => {
     await genreToUpdate.save();
     return res.status(200).json({ status: "Genre successfully updated" });
   } catch (err) {
-    console.log(err);
     return next(normalizeError(err.message, 500));
   }
 };
