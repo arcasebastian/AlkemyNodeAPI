@@ -1,5 +1,5 @@
 const path = require("path");
-const server = require("../app");
+const server = "http://localhost:3000";
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 chai.should();

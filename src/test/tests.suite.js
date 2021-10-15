@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
-const sequelize = require("../models/sequelize");
-const { where } = require("sequelize");
+const sequelize = require("./sequelizeForTest");
 const {
   user: User,
   genre: Genre,

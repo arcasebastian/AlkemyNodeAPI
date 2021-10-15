@@ -8,7 +8,7 @@ sequelize = new Sequelize(
   env.databasePassword,
   {
     dialect: "mysql",
-    host: env.databaseHost,
+    host: env.testDatabaseHost,
     logging: false,
   }
 );
