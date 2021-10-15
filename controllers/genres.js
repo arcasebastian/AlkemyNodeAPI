@@ -25,6 +25,7 @@ exports.post = async (req, res, next) => {
 exports.getAll = async (req, res, next) => {
   try {
     const genres = await Genre.getList();
+    if (genres.length === 0) return res.status(204).json([]);
     res.status(200).json(genres);
   } catch (err) {
     return next(normalizeError(err.message, 500));

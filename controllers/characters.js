@@ -31,6 +31,7 @@ exports.getAll = async (req, res, next) => {
   try {
     const query = matchedData(req);
     const charactersList = await Character.getList(setFilter(query));
+    if (charactersList.length === 0) return res.status(204).json([]);
     return res.status(200).json(charactersList);
   } catch (err) {
     return next(normalizeError(err.message, 500));

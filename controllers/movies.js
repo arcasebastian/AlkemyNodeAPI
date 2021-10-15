@@ -32,6 +32,7 @@ exports.getAll = async (req, res, next) => {
   try {
     const query = matchedData(req);
     const movies = await Movie.getList(setFilter(query), query.order);
+    if (movies.length === 0) return res.status(204).json([]);
     return res.status(200).json(movies);
   } catch (err) {
     return next(normalizeError(err.message, 500));
