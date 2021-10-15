@@ -52,39 +52,6 @@ exports.addMethods = (sequelize) => {
       await this.addMovies(newMoviesObj);
     }
   };
-  // Genres
-  genre.getList = () => {
-    return genre.findAll({
-      attributes: ["id", "url", "name", "image"],
-    });
-  };
-  genre.getDetails = (id) => {
-    return genre.findOne({
-      where: { id: id },
-      attributes: ["name", "image"],
-      include: [
-        {
-          model: movie,
-          as: "movies",
-          attributes: ["id", "url", "title"],
-          through: {
-            attributes: [],
-          },
-        },
-      ],
-    });
-  };
-
-  //User
-  user.findByEmail = (emailToFind) => {
-    return user.findOne({
-      where: {
-        email: emailToFind,
-        status: 1,
-      },
-    });
-  };
-
   //Movies
   movie.getList = (filter, order) => {
     let orderBy = null;
@@ -132,6 +99,38 @@ exports.addMethods = (sequelize) => {
       });
       await this.addGenres(newGenresObject);
     }
+  };
+  // Genres
+  genre.getList = () => {
+    return genre.findAll({
+      attributes: ["id", "url", "name", "image"],
+    });
+  };
+  genre.getDetails = (id) => {
+    return genre.findOne({
+      where: { id: id },
+      attributes: ["name", "image"],
+      include: [
+        {
+          model: movie,
+          as: "movies",
+          attributes: ["id", "url", "title"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+  };
+
+  //User
+  user.findByEmail = (emailToFind) => {
+    return user.findOne({
+      where: {
+        email: emailToFind,
+        status: 1,
+      },
+    });
   };
   for (let model of [genre, movie, character]) {
     model.prototype.toJSON = function () {

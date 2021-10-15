@@ -54,10 +54,6 @@ app.use((error, req, res, next) => {
     extraData: error.extraData,
   });
 });
-const server = http.createServer(app);
 sequelize.sync();
 
-var os = require("os");
-console.log(os.hostname());
-
-module.exports = server.listen(3000);
+module.exports = app.listen(3000);
