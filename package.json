@@ -1,12 +1,17 @@
 {
   "name": "alkemychallengeapi",
-  "version": "0.0.1",
+  "version": "1.0",
   "description": "An challenge API to find disney characters, movies and their genres",
   "main": "src/app.js",
   "scripts": {
     "test": "mocha src/test",
+    "setup": "cp src/env/env-default.json src/env/env.json",
+    "preprestart": "npm run setup",
     "prestart": "node src/preStart.js",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "predocker": "npm run setup",
+    "docker": "docker-compose up"
+
   },
   "repository": {
     "type": "git",

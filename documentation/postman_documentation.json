@@ -1,0 +1,3467 @@
+{
+	"info": {
+		"_postman_id": "ac9241b4-06fa-4ff6-b5e5-43f6a294a648",
+		"name": "DisneyAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@mail.com\",\n    \"password\": \"111111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/auth/register",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "## /auth/register\n\nRegister a new user."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const token = pm.response.json();",
+									"console.log(token);",
+									"",
+									"    pm.collectionVariables.set(\"access_token\", token.access_token);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@mail.com\",\n    \"password\": \"111111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/auth/login",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "## /auth/login\n\nLogin a previously registered user."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Characters",
+			"item": [
+				{
+					"name": "Characters List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/characters",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"characters"
+							]
+						},
+						"description": "## /characters\n\nGets a full list of all the characters in the available in the database. \n\nThe results can be filtered by using: \n\n* name=value\n* age=value\n* movie=value\n\nExample: /characters?movie=1&age=19"
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "154"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9a-W4rpU0MOncja0I2yriK5uoT4/Jk\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:20:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/characters/1\",\n        \"name\": \"Test Character\",\n        \"image\": \"/images/test.jpg\"\n    },\n    {\n        \"url\": \"/characters/2\",\n        \"name\": \"Rapunzel\",\n        \"image\": \"/images/1634257145553.png\"\n    }\n]"
+						},
+						{
+							"name": "Filter by movie",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters?movies=1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									],
+									"query": [
+										{
+											"key": "movies",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "76"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4c-NG8b3WRXTcT9fC/UvtwDHzsLsKM\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Oct 2021 23:33:08 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/characters/1\",\n        \"name\": \"Test Character\",\n        \"image\": \"/images/test.jpg\"\n    }\n]"
+						},
+						{
+							"name": "Filter by name",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters?name=Test",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Test"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "76"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4c-NG8b3WRXTcT9fC/UvtwDHzsLsKM\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:04:14 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/characters/1\",\n        \"name\": \"Test Character\",\n        \"image\": \"/images/test.jpg\"\n    }\n]"
+						},
+						{
+							"name": "Query validation error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters?age=Test",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									],
+									"query": [
+										{
+											"key": "age",
+											"value": "Test"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "76"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4c-CX7xp14bnjj8wBooNTRzTCQlsSQ\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:15:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Age filter param must be a integer\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						},
+						{
+							"name": "No content",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters?name=Run",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Run"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:18:16 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "New Character",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Rapunzel",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "history",
+									"value": "lorem asas as a",
+									"type": "text"
+								},
+								{
+									"key": "movies",
+									"value": "1,3",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/sebastian/Pictures/Screenshot_4.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/characters",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"characters"
+							]
+						},
+						"description": "## POST /characters\n\nThis is used to create a new character.\n\nTo use it, you need to specify the following fields: \n\n<table>\n<tr>\n<th>Field</th>\n<th>Description</th>\n<th>Required</th>\n</tr>\n<tr>\n<td>Name</td>\n<td>Name of the character. This value is unique.</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Age</td>\n<td>Age of the character. Must be an integer.</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Weight</td>\n<td>Weight of the character. Can be a decimal value. Ex 55.12</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>History</td>\n<td>Short description of the history of the character. This field can be up to 300 characters. </td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Image</td>\n<td>A picture of the character. The format needs to be  jpg, jpeg or png.</td>\n<td>Yes</td>\n</tr>\n<tr>\n<td>Movies</td>\n<td>All the movies the new character as been part of. You need to use the movies ids separated by comma. Ex 1,2,5</td>\n<td>No</td>\n</tr>\n\n</table>"
+					},
+					"response": [
+						{
+							"name": "Valid Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Rapunzel 32d",
+											"type": "text"
+										},
+										{
+											"key": "age",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "history",
+											"value": "ASadmqkdmqwlmdwqkdmslamdasd",
+											"type": "text"
+										},
+										{
+											"key": "movies",
+											"value": "1,3",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_4.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/characters",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "47"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2f-ah5KqhdMMA6tteX/JE0hYh8V4cg\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Oct 2021 23:51:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"New character successfully created\"\n}"
+						},
+						{
+							"name": "Validation error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Rapunzel 32d",
+											"type": "text"
+										},
+										{
+											"key": "age",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "history",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "movies",
+											"value": "1,3",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_4.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/characters",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "107"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6b-pZS75hwAA+uj5pu/MpFPcRFSh9Q\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:02:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"History is required and must be between 10 to 300 characters long\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Character Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/characters/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"characters",
+								"1"
+							]
+						},
+						"description": "## GET /characters/:id\n\nGets the detailed information of a character."
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "149"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"95-hSoScH99znrHMU6udw647HkqUR8\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:19:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Test Character\",\n    \"image\": \"/images/test.jpg\",\n    \"age\": 16,\n    \"weight\": 55,\n    \"history\": \"lorem ipsum\",\n    \"movies\": [\n        {\n            \"url\": \"/movies/1\",\n            \"title\": \"Test Movie\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"1"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-18ggm/mBqTysHkAymHgPDh8UoKM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 10 Oct 2021 01:34:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not found\",\n    \"httpCode\": 404,\n    \"extraData\": \"\"\n}"
+						},
+						{
+							"name": "Invalid ID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/asd",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"asd"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "81"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"51-8+3SyPGfjRL9pzUgR3KsHD6C5nc\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 10 Oct 2021 01:35:14 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Resource identifier must be an integer.\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Character Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Rapunzel 3",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "18",
+									"type": "text"
+								},
+								{
+									"key": "weight",
+									"value": "AS",
+									"type": "text"
+								},
+								{
+									"key": "history",
+									"value": "dsadsfsadfsdfsdafdsf",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/sebastian/Pictures/Screenshot_1.png"
+								},
+								{
+									"key": "movies",
+									"value": "19",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/characters/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"characters",
+								"1"
+							]
+						},
+						"description": "## PUT /characters/:id\n\nUpdates a character following the same format/validations as POST method"
+					},
+					"response": [
+						{
+							"name": "Valid Update",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Rapunzel 3",
+											"type": "text"
+										},
+										{
+											"key": "age",
+											"value": "18",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "55.10",
+											"type": "text"
+										},
+										{
+											"key": "history",
+											"value": "dsadsfsadfsdfsdafdsf",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "movies",
+											"value": "19",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-3jpOuX760JHJhsv+iTCfHCfdU+A\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Oct 2021 22:00:02 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"Character successfully updated\"\n}"
+						},
+						{
+							"name": "Validation Error",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Rapunzel 3",
+											"type": "text"
+										},
+										{
+											"key": "age",
+											"value": "18",
+											"type": "text"
+										},
+										{
+											"key": "weight",
+											"value": "AS",
+											"type": "text"
+										},
+										{
+											"key": "history",
+											"value": "dsadsfsadfsdfsdafdsf",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "movies",
+											"value": "19",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"1"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "88"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"58-0e33WUDmMjF13W5K/tzhWqHwuS0\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:01:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Weight is required and must be a decimal value\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Character Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/characters/2",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"characters",
+								"2"
+							]
+						},
+						"description": "## DELETE /characters/:id\n\nDelete a character."
+					},
+					"response": [
+						{
+							"name": "Character Deleted",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "47"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2f-I9pLk94h58d/A+4j2f/rynMh7tA\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 10 Oct 2021 02:07:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"Character was successfully deleted\"\n}"
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/characters/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"characters",
+										"1"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-z4nqwFagkRlbVANi4cSZbrWpHxE\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 10 Oct 2021 02:06:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not Found\",\n    \"httpCode\": 404,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				}
+			],
+			"description": "## Characters Crud\n\nThis is the documentation for the characters endpoint. \n\nYou need have an authenticated user to make use of this endpoint and actions.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "Movies List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/movies",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"movies"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "225"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"e1-hPaVJ5M+C5/9MCyqE8Lv5r8MA8A\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:22:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/movies/1\",\n        \"title\": \"Test Movie\",\n        \"image\": \"/images/test.jpg\",\n        \"releaseDate\": \"1995-11-09T03:00:00.000Z\"\n    },\n    {\n        \"url\": \"/movies/2\",\n        \"title\": \"Tangled\",\n        \"image\": \"/images/1634257323481.jpg\",\n        \"releaseDate\": \"2006-11-11T03:00:00.000Z\"\n    }\n]"
+						},
+						{
+							"name": "Filter by title",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies?title=Test",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "Test"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "110"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"6e-IeFPchoa2gm/IEsi50ysG6Jmf9I\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:22:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/movies/1\",\n        \"title\": \"Test Movie\",\n        \"image\": \"/images/test.jpg\",\n        \"releaseDate\": \"1995-11-09T03:00:00.000Z\"\n    }\n]"
+						},
+						{
+							"name": "Order by date",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies?order=DESC",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									],
+									"query": [
+										{
+											"key": "order",
+											"value": "DESC"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "225"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"e1-O5yqLx0fMuUMdD6v0yMeglPqCXs\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:23:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/movies/2\",\n        \"title\": \"Tangled\",\n        \"image\": \"/images/1634257323481.jpg\",\n        \"releaseDate\": \"2006-11-11T03:00:00.000Z\"\n    },\n    {\n        \"url\": \"/movies/1\",\n        \"title\": \"Test Movie\",\n        \"image\": \"/images/test.jpg\",\n        \"releaseDate\": \"1995-11-09T03:00:00.000Z\"\n    }\n]"
+						},
+						{
+							"name": "No Content",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies?title=Toy",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "Toy"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:23:43 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "New Movie",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Tangled",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "releaseDate",
+									"value": "11/11/2006",
+									"type": "text"
+								},
+								{
+									"key": "genres",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/sebastian/Documents/PP/Node/AlkemyNodeApi/test/test_files/movie.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/movies",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"movies"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Tangled",
+											"type": "text"
+										},
+										{
+											"key": "rating",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "releaseDate",
+											"value": "11/11/2006",
+											"type": "text"
+										},
+										{
+											"key": "genres",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Documents/PP/Node/AlkemyNodeApi/test/test_files/movie.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/movies",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-96v/J7PFM0JrASKeCUEwu6xGpKc\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:22:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"New movie successfully created\"\n}"
+						},
+						{
+							"name": "Movie title already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Tangled",
+											"type": "text"
+										},
+										{
+											"key": "rating",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "releaseDate",
+											"value": "11/11/2006",
+											"type": "text"
+										},
+										{
+											"key": "genres",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Documents/PP/Node/AlkemyNodeApi/test/test_files/movie.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/movies",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-vu8cFmkVikN0j0fXX6CxiQaIivg\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:25:27 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Movie is already registered\",\n    \"httpCode\": 409,\n    \"extraData\": \"\"\n}"
+						},
+						{
+							"name": "Validation error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Tangled",
+											"type": "text"
+										},
+										{
+											"key": "rating",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "releaseDate",
+											"value": "11/11/2006",
+											"type": "text"
+										},
+										{
+											"key": "genres",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Documents/PP/Node/AlkemyNodeApi/test/test_files/movie.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/movies",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "84"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"54-giwks800pvQDKXn939lrZaw9iAY\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:26:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"title, rating and releaseDate are required\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Movie Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/movies/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"movies",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "246"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f6-N7KanY0T8Fx/Tnt3TEGDi++odtg\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:26:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"title\": \"Test Movie\",\n    \"image\": \"/images/test.jpg\",\n    \"releaseDate\": \"1995-11-09T03:00:00.000Z\",\n    \"genres\": [\n        {\n            \"url\": \"/genres/1\",\n            \"name\": \"Test Genre\"\n        }\n    ],\n    \"characters\": [\n        {\n            \"url\": \"/characters/1\",\n            \"name\": \"Test Character\"\n        },\n        {\n            \"url\": \"/characters/2\",\n            \"name\": \"Rapunzel\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies",
+										"1"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-z4nqwFagkRlbVANi4cSZbrWpHxE\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:26:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not Found\",\n    \"httpCode\": 404,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Movie Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Tangled 3",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "releaseDate",
+									"value": "11/09/1995",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/sebastian/Pictures/Screenshot_1.png"
+								},
+								{
+									"key": "characters",
+									"value": "16",
+									"type": "text"
+								},
+								{
+									"key": "genres",
+									"value": "18",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/movies/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"movies",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Tangled 3",
+											"type": "text"
+										},
+										{
+											"key": "rating",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "releaseDate",
+											"value": "11/09/1995",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "characters",
+											"value": "16",
+											"type": "text"
+										},
+										{
+											"key": "genres",
+											"value": "18",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/movies/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "39"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"27-6lRRr6yCyjKaz5wM2WdlTJPYztg\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:27:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"Movie successfully updated\"\n}"
+						},
+						{
+							"name": "Validation error",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Tangled 3",
+											"type": "text"
+										},
+										{
+											"key": "rating",
+											"value": "5",
+											"type": "text"
+										},
+										{
+											"key": "releaseDate",
+											"value": "11/09/1995",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "characters",
+											"value": "16",
+											"type": "text"
+										},
+										{
+											"key": "genres",
+											"value": "18",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/movies/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies",
+										"1"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "94"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"5e-TEIenf/pqy61NDDbNx9XpiQmaJA\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:28:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Movie name is already registered and cant be changed\",\n    \"httpCode\": 409,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Movie Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/movies/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"movies",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-KT2yTKdLHVu6MEVx7s0uD7SRqP0\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:29:31 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"Movie was successfully deleted\"\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/movies/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"movies",
+										"1"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-z4nqwFagkRlbVANi4cSZbrWpHxE\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:29:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not Found\",\n    \"httpCode\": 404,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Movies Crud\nThis is the documentation for the movies and series endpoint.\n\nYou need have an authenticated user to make use of this endpoint and actions.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Genres List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/genres",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"genres"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/genres",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "68"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"44-hkTyROAhTKTuZnB9WUieBq1h0T4\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:32:49 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"url\": \"/genres/1\",\n        \"name\": \"Test Genre\",\n        \"image\": \"/images/test.jpg\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "New Genre",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/sebastian/Pictures/Screenshot_1.png"
+								},
+								{
+									"key": "name",
+									"value": "Animation",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/genres",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"genres"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "name",
+											"value": "Animation",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/genres",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-wn2F1JW5whMO2J+5Cy7eYYdJJm4\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:33:29 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"New genre successfully created\"\n}"
+						},
+						{
+							"name": "Genre name exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "name",
+											"value": "Animation",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/genres",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "69"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"45-O6jEDhBiiiGw4HPAoGJhjEbmGjw\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:33:49 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Genre is already registered\",\n    \"httpCode\": 409,\n    \"extraData\": \"\"\n}"
+						},
+						{
+							"name": "Validation error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "name",
+											"value": "Animation",
+											"type": "text",
+											"disabled": true
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/genres",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "105"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"69-6M8nAbVY8xRARiipgS5juO0vKPU\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:34:13 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"A genre name is required and must be at least 3 characters long\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Genre Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/genres/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"genres",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/genres/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "100"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"64-HdCYI53PxIVEVIzFOgahaNX8lhc\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:34:33 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Test Genre\",\n    \"image\": \"/images/test.jpg\",\n    \"movies\": [\n        {\n            \"url\": \"/movies/1\",\n            \"title\": \"Test Movie\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/genres/4",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres",
+										"4"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-18ggm/mBqTysHkAymHgPDh8UoKM\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:34:59 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not found\",\n    \"httpCode\": 404,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Genre Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/sebastian/Pictures/Screenshot_1.png"
+								},
+								{
+									"key": "name",
+									"value": "Action",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseEndpoint}}/genres/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"genres",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "name",
+											"value": "Action",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/genres/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "39"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"27-IslMVGgduEI4/oudEVF0k4cZRuE\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:35:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"Genre successfully updated\"\n}"
+						},
+						{
+							"name": "Validation error",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/sebastian/Pictures/Screenshot_1.png"
+										},
+										{
+											"key": "name",
+											"value": "Action",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseEndpoint}}/genres/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres",
+										"1"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "105"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"69-6M8nAbVY8xRARiipgS5juO0vKPU\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:36:12 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"A genre name is required and must be at least 3 characters long\",\n    \"httpCode\": 400,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Genre Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseEndpoint}}/genres/1",
+							"host": [
+								"{{baseEndpoint}}"
+							],
+							"path": [
+								"genres",
+								"1"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/genres/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "43"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2b-JuPvg88xuk474GqP8e/NUIHfoUo\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:36:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"Genre was successfully deleted\"\n}"
+						},
+						{
+							"name": "Not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseEndpoint}}/genres/1",
+									"host": [
+										"{{baseEndpoint}}"
+									],
+									"path": [
+										"genres",
+										"1"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "OPTIONS, GET, PUT, POST, DELETE"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "Authorization,Cache-Control,Content-Type"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "51"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"33-18ggm/mBqTysHkAymHgPDh8UoKM\""
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 15 Oct 2021 00:36:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Not found\",\n    \"httpCode\": 404,\n    \"extraData\": \"\"\n}"
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{access_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoic29tZXVzZXJAZ29vZ2xlLmNvbSIsIm5hbWUiOiJkc2Fkc2EiLCJpYXQiOjE2MzM3MTY3NzUsImV4cCI6MTYzMzcyMzk3NX0.6Ze5Al3hAEdfkTQjv_ciZDDo1_tRYVIp_PfX4RGVBN4"
+		}
+	]
+}
