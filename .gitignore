@@ -1,5 +1,5 @@
 /node_modules/
 /.idea/
-env/env.json
+src/env/env.json
 .nyc_output/
-public/images/
+src/public/images/

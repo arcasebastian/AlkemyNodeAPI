@@ -2,10 +2,10 @@
   "name": "alkemychallengeapi",
   "version": "0.0.1",
   "description": "An challenge API to find disney characters, movies and their genres",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "test": "mocha",
-    "start": "nodemon app.js"
+    "test": "mocha src/test",
+    "start": "node src/app.js"
   },
   "repository": {
     "type": "git",
