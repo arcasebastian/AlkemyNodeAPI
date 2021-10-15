@@ -41,7 +41,7 @@ router.put(
   validationChain,
   body("name").custom((value, { req }) => {
     return Genre.findOne({ where: { name: value } }).then((genre) => {
-      if (genre.id != req.params.id)
+      if (genre && genre.id != req.params.id)
         return Promise.reject(
           "Genre name is already registered and cant be changed"
         );
