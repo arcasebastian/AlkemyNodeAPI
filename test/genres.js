@@ -103,6 +103,15 @@ describe("Genres API endpoint", () => {
           done();
         });
     });
+    it("should return 404 status code", function (done) {
+      requester
+        .get(`${baseEndpoint}/0`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
+    });
   });
   describe("6 - PUT /genres/:id", () => {
     it("should update a genre", function (done) {
@@ -120,6 +129,17 @@ describe("Genres API endpoint", () => {
           done();
         });
     });
+    it("should return 404 status code", function (done) {
+      requester
+        .put(`${baseEndpoint}/0`)
+        .field({ name: "Not found" })
+        .attach("image", newGenreImg)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
+    });
   });
   describe("7 - DELETE /genres/:id", () => {
     it("should delete genre", function (done) {
@@ -132,6 +152,15 @@ describe("Genres API endpoint", () => {
           res.body.should.have
             .property("status")
             .eq("Genre was successfully deleted");
+          done();
+        });
+    });
+    it("should return 404 status code", function (done) {
+      requester
+        .delete(`${baseEndpoint}/0`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
           done();
         });
     });

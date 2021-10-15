@@ -97,15 +97,56 @@ describe("Characters API endpoint", () => {
   describe("3 - GET /characters", () => {
     it("should return a list of characters", function (done) {
       requester
+        .get(baseEndpoint)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          res.body.length.should.be.greaterThan(0);
+          res.body[0].should.to.include.all.keys("url", "name", "image");
+          done();
+        });
+    });
+
+    it("should return the posted character", function (done) {
+      requester
         .get(baseEndpoint + `?name=${newCharacter.name}`)
         .set("Authorization", access_token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
+          res.body.length.should.be.eq(1);
+          res.body[0].should.to.include.all.keys("url", "name", "image");
           let url = res.body[0].url.split("/");
           id = url[2];
-          res.body.length.should.be.greaterThan(0);
+          done();
+        });
+    });
+    it("should return a valid response", function (done) {
+      requester
+        .get(
+          baseEndpoint +
+            `?name=${newCharacter.name}&age=${newCharacter.age}&weight=${newCharacter.weight}&movies=${newCharacter.movies}`
+        )
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          res.body.length.should.be.eq(1);
           res.body[0].should.to.include.all.keys("url", "name", "image");
+          let url = res.body[0].url.split("/");
+          id = url[2];
+          done();
+        });
+    });
+    it("should return a validation error", function (done) {
+      requester
+        .get(baseEndpoint + `?age=Name`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a("object");
+          res.body.should.to.include.all.keys("error", "httpCode");
           done();
         });
     });
@@ -156,6 +197,32 @@ describe("Characters API endpoint", () => {
           done();
         });
     });
+    it("should return a validation error", function (done) {
+      requester
+        .put(`${baseEndpoint}/${id}`)
+        .set("Authorization", access_token)
+        .field(newCharacter)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a("object");
+          res.body.should.to.include.all.keys("error", "httpCode");
+          done();
+        });
+    });
+    it("should return 404 status code", function (done) {
+      newCharacter.name = "Not found";
+      requester
+        .put(`${baseEndpoint}/0`)
+        .set("Authorization", access_token)
+        .field(newCharacter)
+        .attach("image", newCharacterImage)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.be.a("object");
+          res.body.should.to.include.all.keys("error", "httpCode");
+          done();
+        });
+    });
   });
   describe("6 - DELETE /characters/:id", () => {
     it("should delete character", function (done) {
@@ -168,6 +235,17 @@ describe("Characters API endpoint", () => {
           res.body.should.have
             .property("status")
             .eq("Character was successfully deleted");
+          done();
+        });
+    });
+    it("should return a 404 status code", function (done) {
+      requester
+        .delete(`${baseEndpoint}/${id}`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.be.a("object");
+          res.body.should.to.include.all.keys("error", "httpCode");
           done();
         });
     });

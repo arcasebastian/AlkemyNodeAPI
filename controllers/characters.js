@@ -95,11 +95,6 @@ function setFilter(validParams) {
       [Op.eq]: age,
     };
   }
-  if (age) {
-    filter.age = {
-      [Op.eq]: age,
-    };
-  }
   if (weight) {
     filter.weight = {
       [Op.eq]: weight,

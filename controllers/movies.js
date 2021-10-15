@@ -68,7 +68,7 @@ exports.put = async (req, res, next) => {
     await findMovie.save();
     return res.status(200).json({ status: "Movie successfully updated" });
   } catch (err) {
-    next(err);
+    return next(normalizeError(err.message, 500));
   }
 };
 exports.delete = async (req, res, next) => {
@@ -81,7 +81,7 @@ exports.delete = async (req, res, next) => {
     await movieToDelete.destroy();
     return res.status(200).json({ status: "Movie was successfully deleted" });
   } catch (err) {
-    return next(err);
+    return next(normalizeError(err.message, 500));
   }
 };
 function setFilter(validParams) {

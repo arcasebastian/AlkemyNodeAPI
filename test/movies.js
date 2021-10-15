@@ -75,9 +75,34 @@ describe("Movies API endpoint", () => {
           done();
         });
     });
+    it("should return a validation error", function (done) {
+      const invalidMovie = { ...newMovie };
+      invalidMovie.title = "Toy Story";
+      requester
+        .post(`${baseEndpoint}`)
+        .field(invalidMovie)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        });
+    });
   });
   describe("4 - GET /movies", () => {
-    it("should return a list of movies", function (done) {
+    it("should return the posted movie", function (done) {
+      requester
+        .get(baseEndpoint)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          res.body.length.should.be.greaterThan(0);
+          res.body[0].should.have.property("title");
+          res.body[0].should.have.property("image");
+          done();
+        });
+    });
+    it("should return the posted movie", function (done) {
       requester
         .get(baseEndpoint + `?title=${newMovie.title}`)
         .set("Authorization", access_token)
@@ -123,6 +148,28 @@ describe("Movies API endpoint", () => {
           done();
         });
     });
+    it("should return a validation error", function (done) {
+      requester
+        .put(`${baseEndpoint}/${id}`)
+        .field(newMovie)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        });
+    });
+    it("should return 404 status code", function (done) {
+      newMovie.title = "Not found";
+      requester
+        .put(`${baseEndpoint}/0`)
+        .field(newMovie)
+        .attach("image", newMovieImg)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
+    });
   });
   describe("7 - DELETE /movies/:id", () => {
     it("should delete movie", function (done) {
@@ -135,6 +182,15 @@ describe("Movies API endpoint", () => {
           res.body.should.have
             .property("status")
             .eq("Movie was successfully deleted");
+          done();
+        });
+    });
+    it("should return 404 status code", function (done) {
+      requester
+        .delete(`${baseEndpoint}/0`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
           done();
         });
     });
