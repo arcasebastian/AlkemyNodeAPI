@@ -5,21 +5,23 @@ const chaiHttp = require("chai-http");
 chai.should();
 chai.use(chaiHttp);
 const user = {
-  email: "someuser@google.com",
-  password: "asASqm1!ea1g",
+  email: "test@mail.com",
+  password: "111111",
 };
 // TODO Validation errors testing
-describe("Movies API endpoint", () => {
+describe("Characters API endpoint", () => {
   let requester;
-  const baseEndpoint = "/movies";
-  const newMovie = {
-    title: "Tangled",
-    releaseDate: "11/11/2010",
-    rating: 4,
-    genres: [],
-    characters: [],
+  const baseEndpoint = "/characters";
+  const newCharacter = {
+    name: "Rapunzel",
+    age: 21,
+    weight: 52,
+    history:
+      "Rapunzel may have lived her entire life locked inside a hidden tower. Rapunzel is full of curiosity about the outside world, and she can't help but feel that her true destiny lies outside the lonely tower walls.",
+    movies: "1",
   };
-  const newMovieImg = path.join(__dirname, "test_files", "movie.jpg");
+  const newCharacterImage = path.join(__dirname, "test_files", "rapunzel.jpg");
+
   let access_token = "";
   let id = "";
   before((done) => {
@@ -30,20 +32,21 @@ describe("Movies API endpoint", () => {
       .end((err, res) => {
         if (!err) {
           access_token = `Bearer ${res.body.access_token}`;
+          done();
         } else {
           throw err;
         }
-        done();
       });
   });
-  describe("Unauthorized /movies", () => {
+
+  describe("0 - Unauthorized /characters", () => {
     it("should get a 401 unauthorized status code", function () {
       requester.get(baseEndpoint).end((err, res) => {
         res.should.have.status(401);
       });
     });
   });
-  describe("OPTIONS /movies", () => {
+  describe("1 - OPTIONS /characters", () => {
     it("should get a valid preflight response", function (done) {
       requester.options(baseEndpoint).end((err, res) => {
         res.should.have.status(204);
@@ -60,74 +63,102 @@ describe("Movies API endpoint", () => {
       });
     });
   });
-  describe("POST /movies", () => {
-    console.log(__dirname);
-    it("should create a new genre", function (done) {
+  describe("2 - POST /characters", () => {
+    it("should create a new character", function (done) {
       requester
         .post(baseEndpoint)
         .set("Authorization", access_token)
-        .field(newMovie)
-        .attach("image", newMovieImg)
+        .field(newCharacter)
+        .attach("image", newCharacterImage)
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.a("object");
           res.body.should.have
             .property("status")
-            .eq("New movie successfully created");
+            .eq("New character successfully created");
+          done();
+        });
+    });
+    it("should return a validation error", function (done) {
+      const invalidCharacter = { ...newCharacter };
+      invalidCharacter.name = "";
+      requester
+        .post(baseEndpoint)
+        .set("Authorization", access_token)
+        .field(invalidCharacter)
+        .attach("image", newCharacterImage)
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.to.include.all.keys("error", "httpCode");
           done();
         });
     });
   });
-  describe("GET /movies", () => {
-    it("should return a list of movies", function (done) {
-      console.log(access_token);
+  describe("3 - GET /characters", () => {
+    it("should return a list of characters", function (done) {
       requester
-        .get(baseEndpoint)
+        .get(baseEndpoint + `?name=${newCharacter.name}`)
         .set("Authorization", access_token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
-          id = res.body[0].id;
+          let url = res.body[0].url.split("/");
+          id = url[2];
           res.body.length.should.be.greaterThan(0);
-          res.body[0].should.have.property("title");
-          res.body[0].should.have.property("image");
+          res.body[0].should.to.include.all.keys("url", "name", "image");
           done();
         });
     });
   });
-  describe("GET /movies/:id", () => {
-    it("should return a single genre", function (done) {
+  describe("4 - GET /characters/:id", () => {
+    it("should return a single character", function (done) {
       requester
         .get(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
-          res.body.should.have.property("title");
+          res.body.should.to.include.all.keys(
+            "name",
+            "age",
+            "weight",
+            "image",
+            "history",
+            "movies"
+          );
+          done();
+        });
+    });
+    it("should return 404 status code", function (done) {
+      requester
+        .get(`${baseEndpoint}/0`)
+        .set("Authorization", access_token)
+        .end((err, res) => {
+          res.should.have.status(404);
           done();
         });
     });
   });
-  describe("PUT /movies/:id", () => {
-    newMovie.title = "Tangled Updated";
-    it("should update a genre", function (done) {
+  describe("5 - PUT /characters/:id", () => {
+    it("should update a character", function (done) {
+      newCharacter.age = 30;
       requester
         .put(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
-        .field(newMovie)
-        .attach("image", newMovieImg)
+        .field(newCharacter)
+        .attach("image", newCharacterImage)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
           res.body.should.have
             .property("status")
-            .eq("Movie successfully updated");
+            .eq("Character successfully updated");
           done();
         });
     });
   });
-  describe("DELETE /movies/:id", () => {
-    it("should delete genre", function (done) {
+  describe("6 - DELETE /characters/:id", () => {
+    it("should delete character", function (done) {
       requester
         .delete(`${baseEndpoint}/${id}`)
         .set("Authorization", access_token)
@@ -136,7 +167,7 @@ describe("Movies API endpoint", () => {
           res.body.should.be.a("object");
           res.body.should.have
             .property("status")
-            .eq("Movie was successfully deleted");
+            .eq("Character was successfully deleted");
           done();
         });
     });

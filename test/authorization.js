@@ -6,21 +6,20 @@ const User = sequelize.models.user;
 chai.should();
 chai.use(chaiHttp);
 const requester = chai.request(server).keepOpen();
-
+const registerEndpoint = "/auth/register";
+const loginEndpoint = "/auth/login";
+const validRegister = {
+  name: "validUser",
+  email: "validMail@google.com",
+  password: "asASqm1ea1g",
+};
+const invalidRegister = {
+  name: "invalidUser",
+  email: "invalidmail__google.com",
+  password: "asASqm1!ea1g",
+};
 describe("Authorization API endpoint", () => {
-  const registerEndpoint = "/auth/register";
-  const loginEndpoint = "/auth/login";
-  const validRegister = {
-    name: "validUser",
-    email: "validMail@google.com",
-    password: "asASqm1!ea1g",
-  };
-  const invalidRegister = {
-    name: "invalidUser",
-    email: "invalidmail___google.com",
-    password: "asASqm1!ea1g",
-  };
-  describe("PUT /auth/signup", () => {
+  describe("1 - PUT /auth/signup", () => {
     it("should register a new user", function (done) {
       requester
         .put(registerEndpoint)
@@ -64,7 +63,7 @@ describe("Authorization API endpoint", () => {
         });
     });
   });
-  describe("GET/POST/DELETE /auth/signup", () => {
+  describe("2 - GET/POST/DELETE /auth/signup", () => {
     it("should return a 405 status response", function (done) {
       requester.get(registerEndpoint).end((err, res) => {
         res.should.have.status(405);
@@ -75,14 +74,14 @@ describe("Authorization API endpoint", () => {
     });
   });
 
-  describe("POST /auth/login", () => {
+  describe("3 - POST /auth/login", () => {
     const validLogin = {
       email: validRegister.email,
       password: validRegister.password,
     };
     const invalidLogin = {
-      email: validRegister.email,
-      password: "weakpassword",
+      email: "test@mail.com",
+      password: "aaaaaaaaaa",
     };
     it("should login a valid user and get a access_token", function (done) {
       requester
@@ -112,9 +111,9 @@ describe("Authorization API endpoint", () => {
         });
     });
   });
-  describe("GET/PUT/DELETE /auth/signup", () => {
+  describe("4 - GET/PUT/DELETE /auth/register", () => {
     it("should return a 405 status response", function (done) {
-      requester.get("/auth/register").end((err, res) => {
+      requester.get(registerEndpoint).end((err, res) => {
         res.should.have.status(405);
         res.body.should.have.a.property("error").eq("Method not allowed");
         done();
@@ -123,12 +122,8 @@ describe("Authorization API endpoint", () => {
   });
   after(() => {
     requester.close();
-    User.findByEmail(validRegister.email)
-      .then((user) => {
-        if (user) user.destroy();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    User.findByEmail(validRegister.email).then((user) => {
+      if (user) return user.destroy();
+    });
   });
 });

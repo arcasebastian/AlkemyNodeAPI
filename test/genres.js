@@ -5,8 +5,8 @@ const chaiHttp = require("chai-http");
 chai.should();
 chai.use(chaiHttp);
 const user = {
-  email: "someuser@google.com",
-  password: "asASqm1!ea1g",
+  email: "test@mail.com",
+  password: "111111",
 };
 // TODO Validation errors testing
 describe("Genres API endpoint", () => {
@@ -32,14 +32,14 @@ describe("Genres API endpoint", () => {
         done();
       });
   });
-  describe("Unauthorized /genres", () => {
+  describe("1 - Unauthorized /genres", () => {
     it("should get a 401 unauthorized status code", function () {
       requester.get(baseEndpoint).end((err, res) => {
         res.should.have.status(401);
       });
     });
   });
-  describe("OPTIONS /genres", () => {
+  describe("2 - OPTIONS /genres", () => {
     it("should get a valid preflight response", function (done) {
       requester.options(baseEndpoint).end((err, res) => {
         res.should.have.status(204);
@@ -56,8 +56,7 @@ describe("Genres API endpoint", () => {
       });
     });
   });
-  describe("POST /genres", () => {
-    console.log(__dirname);
+  describe("3 - POST /genres", () => {
     it("should create a new genre", function (done) {
       requester
         .post(baseEndpoint)
@@ -74,7 +73,7 @@ describe("Genres API endpoint", () => {
         });
     });
   });
-  describe("GET /genres", () => {
+  describe("4 - GET /genres", () => {
     it("should return a list of genres", function (done) {
       requester
         .get(baseEndpoint)
@@ -82,7 +81,9 @@ describe("Genres API endpoint", () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("array");
-          id = res.body[0].id;
+          const genre = res.body.find((value) => value.name === newGenreName);
+          let url = genre.url.split("/");
+          id = url[2];
           res.body.length.should.be.greaterThan(0);
           res.body[0].should.have.property("name");
           res.body[0].should.have.property("image");
@@ -90,7 +91,7 @@ describe("Genres API endpoint", () => {
         });
     });
   });
-  describe("GET /genres/:id", () => {
+  describe("5 - GET /genres/:id", () => {
     it("should return a single genre", function (done) {
       requester
         .get(`${baseEndpoint}/${id}`)
@@ -98,12 +99,12 @@ describe("Genres API endpoint", () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
-          res.body.should.have.property("name").eq(newGenreName);
+          res.body.should.to.include.all.keys("movies", "name", "image");
           done();
         });
     });
   });
-  describe("PUT /genres/:id", () => {
+  describe("6 - PUT /genres/:id", () => {
     it("should update a genre", function (done) {
       requester
         .put(`${baseEndpoint}/${id}`)
@@ -120,7 +121,7 @@ describe("Genres API endpoint", () => {
         });
     });
   });
-  describe("DELETE /genres/:id", () => {
+  describe("7 - DELETE /genres/:id", () => {
     it("should delete genre", function (done) {
       requester
         .delete(`${baseEndpoint}/${id}`)
