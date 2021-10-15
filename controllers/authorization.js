@@ -47,6 +47,7 @@ exports.login = async (req, res, next) => {
       );
       return res.status(200).json({ access_token: token, username: user.name });
     }
+    return next(normalizeError("Invalid email or password", 401));
   } catch (err) {
     return next(err.message, 500);
   }
