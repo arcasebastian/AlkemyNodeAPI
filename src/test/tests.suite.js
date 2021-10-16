@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const sequelize = require("./sequelizeForTest");
+const sequelize = require("../models/sequelize");
 const {
   user: User,
   genre: Genre,
@@ -9,7 +9,7 @@ const {
 
 before((done) => {
   sequelize
-    .sync({ force: true })
+    .sync()
     .then(async () => {
       return preloadTestData();
     })

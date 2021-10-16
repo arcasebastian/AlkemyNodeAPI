@@ -1,7 +1,7 @@
 const server = "http://localhost:3000";
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const sequelize = require("./sequelizeForTest");
+const sequelize = require("../models/sequelize");
 const User = sequelize.models.user;
 chai.should();
 chai.use(chaiHttp);

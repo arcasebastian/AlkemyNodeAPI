@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const env = require("../env/env.json");
+const { env } = require("../env/env");
 const { normalizeError } = require("../util/normalizeError");
 exports.isAuth = (req, res, next) => {
   const authorization = req.get("Authorization");

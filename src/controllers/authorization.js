@@ -1,12 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const env = require("../env/env.json");
+const { env } = require("../env/env");
 const sequelize = require("../models/sequelize");
 const User = sequelize.models.user;
 const {
   normalizeError,
   checkValidationErrors,
 } = require("../util/normalizeError");
+const { sendMail } = require("../util/mailer");
 
 exports.register = async (req, res, next) => {
   const validationError = checkValidationErrors(req);
@@ -20,6 +21,7 @@ exports.register = async (req, res, next) => {
       status: 1,
     });
     if (await newUser.save()) {
+      await sendMail(newUser.toJSON());
       res.status(201).json({ status: "User registered successfully" });
     }
   } catch (err) {
