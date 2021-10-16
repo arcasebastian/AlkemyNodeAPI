@@ -29,15 +29,14 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.status(204).send("");
   return next();
 });
-app.use("/", (req, res, next) => {
-  return res.status(401).json({ httpCode: 401 });
-});
 
 app.use("/auth", authorizationRouter);
 app.use("/genres", genresRouter);
 app.use("/movies", moviesRouter);
 app.use("/characters", charactersRouter);
-
+app.use((req, res, next) => {
+  return res.status(404).json({ httpCode: 404, error: "Not Found" });
+});
 // Generic Error Handling
 app.use((error, req, res, next) => {
   if (req.file) {
@@ -51,6 +50,8 @@ app.use((error, req, res, next) => {
     extraData: error.extraData,
   });
 });
-sequelize.sync();
-
-module.exports = app.listen(process.env.PORT || 80);
+sequelize.sync().then(() => {
+  app.listen(process.env.PORT || 80, (err, status) => {
+    if (!err) console.log(`App is listening to incoming requests`);
+  });
+});
