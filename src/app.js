@@ -53,4 +53,4 @@ app.use((error, req, res, next) => {
 });
 sequelize.sync();
 
-module.exports = app.listen(3000);
+module.exports = app.listen(process.env.PORT || 80);
