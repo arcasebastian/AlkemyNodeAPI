@@ -29,6 +29,9 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.status(204).send("");
   return next();
 });
+app.use("/", (req, res, next) => {
+  return res.status(401).json({ httpCode: 401 });
+});
 
 app.use("/auth", authorizationRouter);
 app.use("/genres", genresRouter);
