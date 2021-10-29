@@ -15,8 +15,8 @@ const validationChain = [
     min: 0,
     max: 5,
   }),
-  body("releaseDate", "Release date must follow the format: DD/MM/YYYY").isDate(
-    { format: "DD/MM/YYYY" }
+  body("releaseDate", "Release date must follow the format: YYYY-MM-DD").isDate(
+    { format: "YYYY-MM-DD" }
   ),
   body("genres")
     .optional()
